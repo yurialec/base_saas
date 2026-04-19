@@ -17,7 +17,7 @@
         </div>
     @endif
 
-    <form action="{{ route('tenant.register') }}" method="POST">
+    <form action="{{ route('register') }}" method="POST">
         @csrf
         <h2>Dados do Tenant</h2>
         <label for="name">Nome do Tenant (Empresa):</label><br>

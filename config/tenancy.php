@@ -12,7 +12,9 @@ return [
     'domain_model' => \App\Models\Domain::class,
 
     'identification_middleware' => [
-        \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
+        'middleware' => [
+            Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
+        ],
     ],
 
     /**

@@ -8,10 +8,23 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Global Scope: Sempre filtra usuários pelo tenant atual
+        static::addGlobalScope('tenant', function (Builder $builder) {
+            if (tenancy()->initialized) {
+                $builder->where('tenant_id', tenant('id'));
+            }
+        });
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -44,4 +57,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class, 'tenant_id');
+    }
 }

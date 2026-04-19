@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -12,6 +13,54 @@ use Spatie\Permission\PermissionRegistrar;
 
 class AuthController extends Controller
 {
+    public function formLogin()
+    {
+        return view('auth.login');
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Credenciais inválidas'], 401);
+        }
+
+        if (!$user->tenant_id) {
+            return response()->json(['message' => 'Usuário sem tenant vinculado.'], 403);
+        }
+
+        $tenant = Tenant::find($user->tenant_id);
+
+        if (!$tenant) {
+            return response()->json(['message' => 'Tenant não encontrado.'], 404);
+        }
+
+        $domainRecord = $tenant->domains->first();
+
+        if (!$domainRecord) {
+            Auth::logout();
+            return back()->withErrors([
+                'email' => 'Empresa sem domínio configurado.',
+            ]);
+        }
+
+        $domainName = $domainRecord->domain;
+
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+            return redirect()->intended('/dashboard');
+        }
+
+        return back()->withErrors([
+            'email' => 'As credenciais fornecidas não correspondem aos nossos registros.',
+        ])->onlyInput('email');
+    }
+
     public function formRegister()
     {
         return view('auth.register');
@@ -49,11 +98,8 @@ class AuthController extends Controller
                 'tenant_id' => $tenant->id,
             ]);
 
-            // O Spatie vai usar o tenant_id automaticamente se 'teams' estiver habilitado
-            // ou você pode forçar o contexto:
             $user->assignRole($ownerRole);
 
-            // Token (Sanctum)
             $token = $user->createToken('api-token')->plainTextToken;
 
             DB::commit();
@@ -70,25 +116,12 @@ class AuthController extends Controller
         }
     }
 
-    public function login(Request $request)
+    public function logout(Request $request)
     {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required',
-        ]);
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        $user = User::where('email', $request->email)
-            ->where('tenant_id', tenant('id')) // garante isolamento
-            ->first();
-
-        if (! $user || ! Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Credenciais inválidas'], 401);
-        }
-
-        setPermissionsTeamId($user->tenant_id);
-
-        $token = $user->createToken('api')->plainTextToken;
-
-        return response()->json(['token' => $token, 'user' => $user]);
+        return redirect()->route('login');
     }
 }
