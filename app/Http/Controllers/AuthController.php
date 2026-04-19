@@ -53,7 +53,7 @@ class AuthController extends Controller
         $domainName = $domainRecord->domain;
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/');
         }
 
         return back()->withErrors([

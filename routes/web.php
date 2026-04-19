@@ -35,5 +35,5 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
     'auth'
 ])->group(function () {
-    Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+    Route::get('/', [HomeController::class, 'home'])->name('home');
 });
