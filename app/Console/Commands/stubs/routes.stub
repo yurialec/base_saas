@@ -1,0 +1,20 @@
+import {{ classes }} from '../pages/{{ classes }}.vue';
+
+export default [
+    {
+        path: '/{{ route }}',
+        name: '{{ route }}',
+        component: {{ classes }}
+    },
+    {
+        path: '/{{ route }}/create',
+        name: '{{ route }}.create',
+        component: () => import('../pages/Create{{ class }}.vue')
+    },
+    {
+        path: '/{{ route }}/edit/:id',
+        name: '{{ route }}.edit',
+        component: () => import('../pages/Edit{{ class }}.vue'),
+        props: true
+    }
+];

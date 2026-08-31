@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Services;
+
+use App\Repositories\{{ class }}Repository;
+
+class {{ class }}Service
+{
+    protected ${{ variable }}Repository;
+
+    public function __construct({{ class }}Repository ${{ variable }}Repository)
+    {
+        $this->{{ variable }}Repository = ${{ variable }}Repository;
+    }
+
+    public function all()
+    {
+        return $this->{{ variable }}Repository->all();
+    }
+
+    public function find($id)
+    {
+        return $this->{{ variable }}Repository->find($id);
+    }
+
+    public function create(array $data)
+    {
+        return $this->{{ variable }}Repository->create($data);
+    }
+
+    public function update(array $data, $id)
+    {
+        return $this->{{ variable }}Repository->update($data, $id);
+    }
+
+    public function delete($id)
+    {
+        return $this->{{ variable }}Repository->delete($id);
+    }
+}

@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\{{ class }};
+
+class {{ class }}Repository
+{
+    protected ${{ variable }};
+
+    public function __construct({{ class }} ${{ variable }})
+    {
+        $this->{{ variable }} = ${{ variable }};
+    }
+
+    public function all()
+    {
+        return $this->{{ variable }}->query()->get();
+    }
+
+    public function find($id)
+    {
+        return $this->{{ variable }}->query()->find($id);
+    }
+
+    public function create(array $data)
+    {
+        return $this->{{ variable }}->create($data);
+    }
+
+    public function update(array $data, $id)
+    {
+        ${{ variable }} = $this->find($id);
+
+        if (! ${{ variable }}) {
+            return null;
+        }
+
+        ${{ variable }}->update($data);
+
+        return ${{ variable }};
+    }
+
+    public function delete($id)
+    {
+        return $this->{{ variable }}->destroy($id);
+    }
+}

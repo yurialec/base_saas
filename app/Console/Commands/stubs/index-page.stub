@@ -1,0 +1,94 @@
+<template>
+    <section class="page">
+        <Loading :loading="isLoading" fullscreen />
+
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
+            <h1 class="h4 mb-0">{{ classes }}</h1>
+            <router-link class="btn btn-primary btn-sm text-white" :to="{ name: '{{ route }}.create' }">
+                <i class="bi bi-plus"></i>
+                <span>Cadastrar</span>
+            </router-link>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nome</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-if="paginated{{ classes }}.length === 0 && !isLoading">
+                            <td class="text-center text-muted py-5" colspan="3">Nenhum resultado encontrado</td>
+                        </tr>
+                        <tr v-for="{{ variable }} in paginated{{ classes }}" :key="{{ variable }}.id">
+                            <td v-text="{{ variable }}.id"></td>
+                            <td v-text="{{ variable }}.name"></td>
+                            <td class="text-end">
+                                <router-link class="btn btn-outline-primary btn-sm me-2"
+                                    :to="{ name: '{{ route }}.edit', params: { id: {{ variable }}.id } }">
+                                    Editar
+                                </router-link>
+                                <button class="btn btn-outline-danger btn-sm" type="button"
+                                    @click="delete{{ class }}({{ variable }}.id)">Excluir</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer bg-white">
+                <Pagination :response="{{ variables }}" :rows="10" @page-change="setPaginated{{ classes }}" />
+            </div>
+        </div>
+    </section>
+</template>
+
+<script>
+export default {
+    name: '{{ classes }}',
+    data() {
+        return {
+            isLoading: false,
+            {{ variables }}: [],
+            paginated{{ classes }}: []
+        };
+    },
+    mounted() {
+        this.search();
+    },
+    methods: {
+        search() {
+            this.isLoading = true;
+
+            axios.get('/api/{{ route }}/list')
+                .then(response => {
+                    this.{{ variables }} = response.data;
+                })
+                .catch(error => {
+                    alertDanger(error);
+                })
+                .finally(() => {
+                    this.isLoading = false;
+                });
+        },
+        delete{{ class }}(id) {
+            this.confirm('', 'Deseja excluir este registro?').then(() => {
+                axios.delete(`/api/{{ route }}/delete/${id}`)
+                    .then(response => {
+                        alertSuccess('Registro excluÃ­do com sucesso!');
+                        this.search();
+                    })
+                    .catch(error => {
+                        alertDanger(error);
+                    });
+            });
+        },
+        setPaginated{{ classes }}({{ variables }}) {
+            this.paginated{{ classes }} = {{ variables }};
+        }
+    }
+};
+</script>

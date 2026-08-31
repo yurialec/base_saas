@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\Store{{ class }}Request;
+use App\Http\Requests\Update{{ class }}Request;
+use App\Services\{{ class }}Service;
+
+class {{ class }}Controller extends Controller
+{
+    protected ${{ variable }}Service;
+
+    public function __construct({{ class }}Service ${{ variable }}Service)
+    {
+        $this->{{ variable }}Service = ${{ variable }}Service;
+    }
+
+    public function index()
+    {
+        return response()->json($this->{{ variable }}Service->all());
+    }
+
+    public function store(Store{{ class }}Request $request)
+    {
+        ${{ variable }} = $this->{{ variable }}Service->create($request->validated());
+
+        return response()->json(${{ variable }}, 201);
+    }
+
+    public function show($id)
+    {
+        ${{ variable }} = $this->{{ variable }}Service->find($id);
+
+        if (! ${{ variable }}) {
+            return response()->json(['message' => '{{ class }} não encontrado.'], 404);
+        }
+
+        return response()->json(${{ variable }});
+    }
+
+    public function update(Update{{ class }}Request $request, $id)
+    {
+        ${{ variable }} = $this->{{ variable }}Service->update($request->validated(), $id);
+
+        if (! ${{ variable }}) {
+            return response()->json(['message' => '{{ class }} não encontrado.'], 404);
+        }
+
+        return response()->json(${{ variable }});
+    }
+
+    public function destroy($id)
+    {
+        $deleted = $this->{{ variable }}Service->delete($id);
+
+        if (! $deleted) {
+            return response()->json(['message' => '{{ class }} não encontrado.'], 404);
+        }
+
+        return response()->json(null, 204);
+    }
+}
