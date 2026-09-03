@@ -20,6 +20,7 @@ window.axios.defaults.withCredentials = true;
  * CSRF Laravel
  */
 const token = document.head.querySelector('meta[name="csrf-token"]');
+const loginUrl = document.head.querySelector('meta[name="login-url"]')?.content;
 
 if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;

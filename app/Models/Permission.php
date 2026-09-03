@@ -14,6 +14,7 @@ class Permission extends Model
         'slug',
         'description',
         'is_active',
+        'tenant_id',
     ];
 
     protected $casts = [

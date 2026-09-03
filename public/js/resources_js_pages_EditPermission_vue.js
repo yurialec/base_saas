@@ -205,7 +205,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.page .card[data-v-1c268e7c] {\n    border-radius: 0.5rem;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.page .card[data-v-1c268e7c] {\r\n    border-radius: 0.5rem;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -254,7 +254,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _EditPermission_vue_vue_type_template_id_1c268e7c_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EditPermission.vue?vue&type=template&id=1c268e7c&scoped=true */ "./resources/js/pages/EditPermission.vue?vue&type=template&id=1c268e7c&scoped=true");
 /* harmony import */ var _EditPermission_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditPermission.vue?vue&type=script&lang=js */ "./resources/js/pages/EditPermission.vue?vue&type=script&lang=js");
 /* harmony import */ var _EditPermission_vue_vue_type_style_index_0_id_1c268e7c_scoped_true_lang_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./EditPermission.vue?vue&type=style&index=0&id=1c268e7c&scoped=true&lang=css */ "./resources/js/pages/EditPermission.vue?vue&type=style&index=0&id=1c268e7c&scoped=true&lang=css");
-/* harmony import */ var C_projetos_estudo_administrativo_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+/* harmony import */ var C_projetos_estudo_base_saas_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
 
 
@@ -262,7 +262,7 @@ __webpack_require__.r(__webpack_exports__);
 ;
 
 
-const __exports__ = /*#__PURE__*/(0,C_projetos_estudo_administrativo_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_EditPermission_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_EditPermission_vue_vue_type_template_id_1c268e7c_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render],['__scopeId',"data-v-1c268e7c"],['__file',"resources/js/pages/EditPermission.vue"]])
+const __exports__ = /*#__PURE__*/(0,C_projetos_estudo_base_saas_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_EditPermission_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_EditPermission_vue_vue_type_template_id_1c268e7c_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render],['__scopeId',"data-v-1c268e7c"],['__file',"resources/js/pages/EditPermission.vue"]])
 /* hot reload */
 if (false) {}
 

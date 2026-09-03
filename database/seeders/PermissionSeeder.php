@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
+use App\Models\Tenant;
 use Illuminate\Database\Seeder;
 
 class PermissionSeeder extends Seeder
@@ -11,8 +13,10 @@ class PermissionSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
+        $tenant = Tenant::where('slug', 'tenant-padrao')->firstOrFail();
+
         $permissions = [
             [
                 'name' => 'Listar Menus',
@@ -37,9 +41,14 @@ class PermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            \App\Models\Permission::updateOrCreate(
-                ['slug' => $permission['slug']],
-                $permission
+            Permission::updateOrCreate(
+                [
+                    'slug' => $permission['slug'],
+                ],
+                $permission + [
+                    'is_active' => true,
+                    'tenant_id' => $tenant->id,
+                ]
             );
         }
     }

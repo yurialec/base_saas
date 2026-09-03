@@ -28,7 +28,8 @@ class UserRepository
         return $this->user
             ->with([
                 'role:id,name',
-                'role.permissions:id,name,slug'
+                'role.permissions:id,name,slug',
+                'tenant:id,name,slug,active',
             ])
             ->find($id);
     }

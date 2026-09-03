@@ -27,9 +27,11 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->configureRateLimiting();
+        Route::pattern('tenant', '[a-z0-9]+(?:-[a-z0-9]+)*');
 
         $this->routes(function () {
-            Route::prefix('api')
+            Route::domain(static::tenantDomain())
+                ->prefix('api')
                 ->middleware('api')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
@@ -38,6 +40,32 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
         });
+    }
+
+    /**
+     * Get the domain pattern used by tenant routes.
+     *
+     * @return string
+     */
+    public static function tenantDomain(): string
+    {
+        return '{tenant}.'.static::applicationDomain();
+    }
+
+    /**
+     * Get the host configured as the application's root domain.
+     *
+     * @return string
+     */
+    public static function applicationDomain(): string
+    {
+        $applicationHost = parse_url(config('app.url'), PHP_URL_HOST);
+
+        if (! $applicationHost) {
+            throw new \RuntimeException('A variável APP_URL deve conter uma URL válida.');
+        }
+
+        return $applicationHost;
     }
 
     /**

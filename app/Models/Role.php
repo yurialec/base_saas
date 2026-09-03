@@ -16,7 +16,16 @@ class Role extends Model
         'description',
         'is_active',
         'parent_id',
+        'tenant_id',
     ];
+
+    /**
+     * Mantém uma árvore Nested Set independente para cada tenant.
+     */
+    protected function getScopeAttributes(): array
+    {
+        return ['tenant_id'];
+    }
 
     public function permissions()
     {

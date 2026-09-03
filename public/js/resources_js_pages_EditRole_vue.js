@@ -381,7 +381,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.role-form-page .card[data-v-23988829] {\n    border-radius: 0.5rem;\n}\n.multiselect[data-v-23988829] {\n    min-height: 38px;\n    color: var(--bs-body-color);\n    font-size: 1rem;\n}\n.multiselect[data-v-23988829] .multiselect__tags {\n    min-height: 38px;\n    padding: 7px 40px 0 12px;\n    border-color: var(--bs-border-color);\n    border-radius: var(--bs-border-radius);\n}\n.multiselect[data-v-23988829] .multiselect__placeholder,\n.multiselect[data-v-23988829] .multiselect__single {\n    margin: 0;\n    padding: 0;\n    line-height: 24px;\n}\n.multiselect[data-v-23988829] .multiselect__input,\n.multiselect[data-v-23988829] .multiselect__single {\n    font-size: 1rem;\n}\n.multiselect[data-v-23988829] .multiselect__tag {\n    margin: 0 5px 5px 0;\n    padding: 5px 26px 5px 10px;\n    border-radius: 4px;\n    background: var(--bs-primary);\n}\n.multiselect[data-v-23988829] .multiselect__option--highlight {\n    background: var(--bs-primary);\n}\n.multiselect[data-v-23988829] .multiselect__option--highlight::after {\n    background: transparent;\n}\n.multiselect[data-v-23988829] .multiselect__content-wrapper {\n    border-color: var(--bs-border-color);\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.role-form-page .card[data-v-23988829] {\r\n    border-radius: 0.5rem;\n}\n.multiselect[data-v-23988829] {\r\n    min-height: 38px;\r\n    color: var(--bs-body-color);\r\n    font-size: 1rem;\n}\n.multiselect[data-v-23988829] .multiselect__tags {\r\n    min-height: 38px;\r\n    padding: 7px 40px 0 12px;\r\n    border-color: var(--bs-border-color);\r\n    border-radius: var(--bs-border-radius);\n}\n.multiselect[data-v-23988829] .multiselect__placeholder,\r\n.multiselect[data-v-23988829] .multiselect__single {\r\n    margin: 0;\r\n    padding: 0;\r\n    line-height: 24px;\n}\n.multiselect[data-v-23988829] .multiselect__input,\r\n.multiselect[data-v-23988829] .multiselect__single {\r\n    font-size: 1rem;\n}\n.multiselect[data-v-23988829] .multiselect__tag {\r\n    margin: 0 5px 5px 0;\r\n    padding: 5px 26px 5px 10px;\r\n    border-radius: 4px;\r\n    background: var(--bs-primary);\n}\n.multiselect[data-v-23988829] .multiselect__option--highlight {\r\n    background: var(--bs-primary);\n}\n.multiselect[data-v-23988829] .multiselect__option--highlight::after {\r\n    background: transparent;\n}\n.multiselect[data-v-23988829] .multiselect__content-wrapper {\r\n    border-color: var(--bs-border-color);\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -459,7 +459,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _EditRole_vue_vue_type_template_id_23988829_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EditRole.vue?vue&type=template&id=23988829&scoped=true */ "./resources/js/pages/EditRole.vue?vue&type=template&id=23988829&scoped=true");
 /* harmony import */ var _EditRole_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditRole.vue?vue&type=script&lang=js */ "./resources/js/pages/EditRole.vue?vue&type=script&lang=js");
 /* harmony import */ var _EditRole_vue_vue_type_style_index_0_id_23988829_scoped_true_lang_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./EditRole.vue?vue&type=style&index=0&id=23988829&scoped=true&lang=css */ "./resources/js/pages/EditRole.vue?vue&type=style&index=0&id=23988829&scoped=true&lang=css");
-/* harmony import */ var C_projetos_estudo_administrativo_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+/* harmony import */ var C_projetos_estudo_base_saas_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
 
 
@@ -467,7 +467,7 @@ __webpack_require__.r(__webpack_exports__);
 ;
 
 
-const __exports__ = /*#__PURE__*/(0,C_projetos_estudo_administrativo_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_EditRole_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_EditRole_vue_vue_type_template_id_23988829_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render],['__scopeId',"data-v-23988829"],['__file',"resources/js/pages/EditRole.vue"]])
+const __exports__ = /*#__PURE__*/(0,C_projetos_estudo_base_saas_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_EditRole_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_EditRole_vue_vue_type_template_id_23988829_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render],['__scopeId',"data-v-23988829"],['__file',"resources/js/pages/EditRole.vue"]])
 /* hot reload */
 if (false) {}
 

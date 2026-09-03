@@ -3,71 +3,120 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
+use App\Models\Role;
+use App\Models\RolePermission;
+use App\Models\Tenant;
 use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Providers\RouteServiceProvider;
+use App\Services\UserService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
-    use RegistersUsers;
-
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $userService;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(UserService $userService)
     {
         $this->middleware('guest');
+
+        $this->userService = $userService;
     }
 
     /**
-     * Get a validator for an incoming registration request.
+     * Display the registration form.
      *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @return \Illuminate\View\View
      */
-    protected function validator(array $data)
+    public function showRegistrationForm()
     {
-        return Validator::make($data, [
+        return view('auth.register');
+    }
+
+    /**
+     * Handle the initial tenant and administrator registration.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'company_name' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8'],
         ]);
+
+        $user = DB::transaction(function () use ($validated) {
+            $tenant = Tenant::create([
+                'name' => $validated['company_name'],
+                'slug' => $this->uniqueTenantSlug($validated['company_name']),
+                'active' => true,
+            ]);
+
+            $role = Role::create([
+                'name' => 'Administrativo',
+                'description' => 'Perfil administrativo do sistema',
+                'is_active' => true,
+                'tenant_id' => $tenant->id,
+            ]);
+
+            foreach ([2, 3, 4] as $permissionId) {
+                RolePermission::create([
+                    'role_id' => $role->id,
+                    'permission_id' => $permissionId,
+                    'tenant_id' => $tenant->id,
+                ]);
+            }
+
+            return User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'tenant_id' => $tenant->id,
+                'role_id' => $role->id,
+            ]);
+        });
+
+        Auth::login($user);
+        $request->session()->regenerate();
+        $sessionUser = $this->userService->addSessionVariables($user->id);
+        $request->session()->forget('url.intended');
+
+        return redirect()->away(
+            $this->userService->tenantUrl(
+                $sessionUser['tenant']['slug'],
+                RouteServiceProvider::HOME
+            )
+        );
     }
 
     /**
-     * Create a new user instance after a valid registration.
+     * Generate an available URL slug for a tenant.
      *
-     * @param  array  $data
-     * @return \App\Models\User
+     * @param  string  $companyName
+     * @return string
      */
-    protected function create(array $data)
+    protected function uniqueTenantSlug(string $companyName): string
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $baseSlug = Str::slug($companyName) ?: 'empresa';
+        $slug = $baseSlug;
+        $suffix = 2;
+
+        while (Tenant::where('slug', $slug)->exists()) {
+            $slug = $baseSlug.'-'.$suffix;
+            $suffix++;
+        }
+
+        return $slug;
     }
 }

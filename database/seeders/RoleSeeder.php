@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Role;
+use App\Models\Tenant;
 use Illuminate\Database\Seeder;
 
 class RoleSeeder extends Seeder
@@ -14,6 +15,8 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        $tenant = Tenant::where('slug', 'tenant-padrao')->firstOrFail();
+
         Role::updateOrCreate(
             [
                 'name' => 'Administrativo',
@@ -22,6 +25,7 @@ class RoleSeeder extends Seeder
             [
                 'description' => 'Perfil administrativo do sistema',
                 'is_active' => true,
+                'tenant_id' => $tenant->id,
             ]
         );
     }
