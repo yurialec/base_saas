@@ -19,7 +19,10 @@ class SidebarMenuService
     public function getSidebar()
     {
         try {
-            if (!session()->has('sidebar')) {
+            $permissionSignature = $this->permissionSignature();
+
+            if (!session()->has('sidebar')
+                || session('sidebar_permission_signature') !== $permissionSignature) {
                 $this->refreshSidebarSession();
             }
 
@@ -238,27 +241,39 @@ class SidebarMenuService
     {
         $menus = $this->sidebarMenuRepository->getSidebar();
         $menus = $this->validatePermissionSidebar($menus);
+
         session()->put('sidebar', $menus);
+        session()->put('sidebar_permission_signature', $this->permissionSignature());
     }
 
     private function validatePermissionSidebar($data)
     {
-        $user = auth()->user();
+        return $this->filterMenusByPermission(
+            $data,
+            $this->permissionSlugs()
+        );
+    }
 
-        if (!$user) {
-            return collect();
-        }
+    private function permissionSlugs(): array
+    {
+        return collect(session('user.role.permissions', []))
+            ->map(function ($permission) {
+                if (is_array($permission)) {
+                    return $permission['slug'] ?? null;
+                }
 
-        $role = $user->role;
-        $permissions = [];
+                return $permission->slug ?? null;
+            })
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values()
+            ->toArray();
+    }
 
-        if ($role && $role->permissions) {
-            $permissions = $role->permissions
-                ->pluck('slug')
-                ->toArray();
-        }
-
-        return $this->filterMenusByPermission($data, $permissions);
+    private function permissionSignature(): string
+    {
+        return hash('sha256', implode('|', $this->permissionSlugs()));
     }
 
     private function filterMenusByPermission($menus, array $permissions): array
