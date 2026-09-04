@@ -23,7 +23,7 @@
                                 <span class="badge badge-primary">Etapa 1 de 2</span>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="company_name" class="col-md-4 col-form-label text-md-right">Nome da empresa</label>
 
                                 <div class="col-md-6">
@@ -39,7 +39,7 @@
 
                             <div class="form-group row mb-0">
                                 <div class="col-md-6 offset-md-4">
-                                    <button id="registration-next" type="button" class="btn btn-primary">
+                                    <button id="registration-next" type="button" class="btn btn-primary btn-sm text-white">
                                         Avançar
                                     </button>
                                 </div>
@@ -52,7 +52,7 @@
                                 <span class="badge badge-primary">Etapa 2 de 2</span>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
 
                                 <div class="col-md-6">
@@ -66,7 +66,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 
                                 <div class="col-md-6">
@@ -80,7 +80,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row mb-3">
                                 <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
 
                                 <div class="col-md-6">
@@ -96,10 +96,10 @@
 
                             <div class="form-group row mb-0">
                                 <div class="col-md-6 offset-md-4">
-                                    <button id="registration-back" type="button" class="btn btn-outline-secondary mr-2">
+                                    <button id="registration-back" type="button" class="btn btn-outline-secondary btn-sm mr-2">
                                         Voltar
                                     </button>
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-primary btn-sm text-white">
                                         Realizar cadastro
                                     </button>
                                 </div>

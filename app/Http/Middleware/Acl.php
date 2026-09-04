@@ -20,8 +20,8 @@ class Acl
         if (!$this->hasPermission($permissionNeeded)) {
             return response()->json([
                 'message' => 'Você não tem permissão para acessar essa funcionalidade.',
-                'code' => 'PERMISSION_DENIED',
-            ], Response::HTTP_FORBIDDEN);
+                'code' => 403,
+            ], 403);
         }
 
         return $next($request);

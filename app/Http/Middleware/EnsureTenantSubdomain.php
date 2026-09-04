@@ -28,7 +28,7 @@ class EnsureTenantSubdomain
         $tenant = $user ? $user->tenant : null;
         $requestedTenant = (string) $request->route('tenant');
 
-        if (! $tenant) {
+        if (!$tenant) {
             abort(403, 'Usuário sem tenant vinculado.');
         }
 
@@ -49,9 +49,7 @@ class EnsureTenantSubdomain
                 $this->userService->tenantUrl($tenant->slug, $path)
             );
         }
-
-        // O slug identifica o tenant, mas não deve ser enviado como argumento
-        // adicional aos controllers que já possuem parâmetros próprios.
+        
         $request->route()->forgetParameter('tenant');
 
         return $next($request);

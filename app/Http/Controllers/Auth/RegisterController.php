@@ -7,28 +7,25 @@ use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\Tenant;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
-use App\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
-    protected $userService;
+    private const HANDOFF_TTL_SECONDS = 60;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(UserService $userService)
+    public function __construct()
     {
         $this->middleware('guest');
-
-        $this->userService = $userService;
     }
 
     /**
@@ -87,15 +84,29 @@ class RegisterController extends Controller
             ]);
         });
 
-        Auth::login($user);
-        $request->session()->regenerate();
-        $sessionUser = $this->userService->addSessionVariables($user->id);
+        $token = Str::random(64);
+        $expiresAt = now()->addSeconds(self::HANDOFF_TTL_SECONDS);
+        $stored = Cache::put($this->handoffCacheKey($token), [
+            'user_id' => $user->id,
+            'tenant_id' => $user->tenant_id,
+            'tenant_slug' => $user->tenant->slug,
+            'remember' => false,
+        ], $expiresAt);
+
+        if (! $stored) {
+            abort(500, 'Não foi possível iniciar a sessão do tenant.');
+        }
+
         $request->session()->forget('url.intended');
 
         return redirect()->away(
-            $this->userService->tenantUrl(
-                $sessionUser['tenant']['slug'],
-                RouteServiceProvider::HOME
+            URL::temporarySignedRoute(
+                'tenant.auth.handoff',
+                $expiresAt,
+                [
+                    'tenant' => $user->tenant->slug,
+                    'token' => $token,
+                ]
             )
         );
     }
@@ -118,5 +129,10 @@ class RegisterController extends Controller
         }
 
         return $slug;
+    }
+
+    private function handoffCacheKey(string $token): string
+    {
+        return 'tenant-login-handoff:'.hash('sha256', $token);
     }
 }
