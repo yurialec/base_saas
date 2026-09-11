@@ -11,6 +11,8 @@ class Tenant extends Model
 
     protected $fillable = [
         'name',
+        'phone',
+        'cpf_cnpj',
         'slug',
         'active',
     ];

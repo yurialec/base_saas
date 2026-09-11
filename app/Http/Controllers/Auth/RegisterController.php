@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\RegisterCompanyRequest;
 use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\Tenant;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -41,21 +41,18 @@ class RegisterController extends Controller
     /**
      * Handle the initial tenant and administrator registration.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Auth\RegisterCompanyRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function register(Request $request)
+    public function register(RegisterCompanyRequest $request)
     {
-        $validated = $request->validate([
-            'company_name' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8'],
-        ]);
+        $validated = $request->validated();
 
         $user = DB::transaction(function () use ($validated) {
             $tenant = Tenant::create([
                 'name' => $validated['company_name'],
+                'phone' => $validated['phone'],
+                'cpf_cnpj' => $validated['cpf_cnpj'],
                 'slug' => $this->uniqueTenantSlug($validated['company_name']),
                 'active' => true,
             ]);
