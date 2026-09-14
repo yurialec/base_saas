@@ -28928,8 +28928,11 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
 
 
 
+var publicRoutes = ['login', 'register'];
+var firstPathSegment = window.location.pathname.split('/')[1];
+var base = publicRoutes.includes(firstPathSegment) ? '/' : "/".concat(firstPathSegment, "/");
 var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_5__.createRouter)({
-  history: (0,vue_router__WEBPACK_IMPORTED_MODULE_5__.createWebHistory)(),
+  history: (0,vue_router__WEBPACK_IMPORTED_MODULE_5__.createWebHistory)(base),
   routes: [].concat(_toConsumableArray(_admin__WEBPACK_IMPORTED_MODULE_0__["default"]), _toConsumableArray(_menus__WEBPACK_IMPORTED_MODULE_1__["default"]), _toConsumableArray(_roles__WEBPACK_IMPORTED_MODULE_2__["default"]), _toConsumableArray(_permissions__WEBPACK_IMPORTED_MODULE_3__["default"]), _toConsumableArray(_users__WEBPACK_IMPORTED_MODULE_4__["default"]))
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (router);
