@@ -25687,7 +25687,7 @@ __webpack_require__.r(__webpack_exports__);
       this.isSidebarToggled = !this.isSidebarToggled;
     },
     logout: function logout() {
-      axios.post('/logout').then(function () {
+      axios.post("/".concat(this.tenant, "/logout")).then(function () {
         window.location.href = '/login';
       })["catch"](function (error) {
         console.error('Logout failed:', error);

@@ -16,8 +16,6 @@ use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
-    private const HANDOFF_TTL_SECONDS = 60;
-
     /**
      * Create a new controller instance.
      *
@@ -81,31 +79,7 @@ class RegisterController extends Controller
             ]);
         });
 
-        $token = Str::random(64);
-        $expiresAt = now()->addSeconds(self::HANDOFF_TTL_SECONDS);
-        $stored = Cache::put($this->handoffCacheKey($token), [
-            'user_id' => $user->id,
-            'tenant_id' => $user->tenant_id,
-            'tenant_slug' => $user->tenant->slug,
-            'remember' => false,
-        ], $expiresAt);
 
-        if (! $stored) {
-            abort(500, 'Não foi possível iniciar a sessão do tenant.');
-        }
-
-        $request->session()->forget('url.intended');
-
-        return redirect()->away(
-            URL::temporarySignedRoute(
-                'tenant.auth.handoff',
-                $expiresAt,
-                [
-                    'tenant' => $user->tenant->slug,
-                    'token' => $token,
-                ]
-            )
-        );
     }
 
     /**
@@ -126,10 +100,5 @@ class RegisterController extends Controller
         }
 
         return $slug;
-    }
-
-    private function handoffCacheKey(string $token): string
-    {
-        return 'tenant-login-handoff:'.hash('sha256', $token);
     }
 }
