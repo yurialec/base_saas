@@ -53,7 +53,7 @@ export default {
             this.isSidebarToggled = !this.isSidebarToggled;
         },
         logout() {
-            axios.post(`/${this.tenant}/logout`)
+            axios.post('/logout')
                 .then(() => {
                     window.location.href = '/login';
                 })

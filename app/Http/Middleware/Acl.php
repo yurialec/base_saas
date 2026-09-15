@@ -2,22 +2,22 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\AclService;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class Acl
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-     */
+    protected AclService $aclService;
+
+    public function __construct(AclService $aclService)
+    {
+        $this->aclService = $aclService;
+    }
+
     public function handle(Request $request, Closure $next, string $permissionNeeded)
     {
-        if (!$this->hasPermission($permissionNeeded)) {
+        if (!$this->aclService->can($permissionNeeded)) {
             return response()->json([
                 'message' => 'Você não tem permissão para acessar essa funcionalidade.',
                 'code' => 403,
@@ -25,16 +25,5 @@ class Acl
         }
 
         return $next($request);
-    }
-
-    private function hasPermission(string $permissionNeeded): bool
-    {
-        $permissions = session('user.role.permissions', []);
-        return collect($permissions)
-            ->contains(
-                fn($permission) =>
-                isset($permission['slug']) &&
-                    $permission['slug'] === $permissionNeeded
-            );
     }
 }

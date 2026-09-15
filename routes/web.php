@@ -25,7 +25,6 @@ Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->na
 Route::post('/register', [RegisterController::class, 'register']);
 
 Route::prefix('{tenant}')->middleware(['auth', 'tenant'])->group(function () {
-    Route::post('/logout', [LoginController::class, 'logout'])->name('tenant.logout');
     Route::get('/{any?}', function () {
         return view('layouts.app_admin');
     })->where('any', '.*');
