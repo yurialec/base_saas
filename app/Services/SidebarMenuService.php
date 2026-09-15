@@ -10,18 +10,22 @@ use Illuminate\Support\Facades\Log;
 class SidebarMenuService
 {
     protected $sidebarMenuRepository;
+    protected $aclService;
 
-    public function __construct(SidebarMenuRepository $sidebarMenuRepository)
-    {
+    public function __construct(
+        SidebarMenuRepository $sidebarMenuRepository,
+        AclService $aclService
+    ) {
         $this->sidebarMenuRepository = $sidebarMenuRepository;
+        $this->aclService = $aclService;
     }
 
     public function getSidebar()
     {
         try {
-            $permissionSignature = $this->permissionSignature();
+            $accessSignature = $this->aclService->accessSignature();
 
-            if (!session()->has('sidebar') || session('sidebar_permission_signature') !== $permissionSignature) {
+            if (!session()->has('sidebar') || session('sidebar_access_signature') !== $accessSignature) {
                 $this->refreshSidebarSession();
             }
 
@@ -239,17 +243,13 @@ class SidebarMenuService
     private function refreshSidebarSession(): void
     {
         $menus = $this->sidebarMenuRepository->getSidebar();
-        $menus = $this->validatePermissionSidebar($menus);
+        $menus = $this->filterMenusByPermission($menus);
 
         session()->put('sidebar', $menus);
-        session()->put('sidebar_permission_signature', $this->permissionSignature());
-    }
 
-    private function validatePermissionSidebar($data)
-    {
-        return $this->filterMenusByPermission(
-            $data,
-            $this->permissionSlugs()
+        session()->put(
+            'sidebar_access_signature',
+            $this->aclService->accessSignature()
         );
     }
 
@@ -270,46 +270,64 @@ class SidebarMenuService
             ->toArray();
     }
 
-    private function permissionSignature(): string
+    private function filterMenusByPermission($menus): array
     {
-        return hash('sha256', implode('|', $this->permissionSlugs()));
-    }
-
-    private function filterMenusByPermission($menus, array $permissions): array
-    {
-        $tenant = request()->route('tenant');
-
         return collect($menus)
-            ->map(function ($menu) use ($permissions, $tenant) {
+            ->map(function ($menu) {
 
-                $menu = is_array($menu) ? $menu : $menu->toArray();
+                $menu = is_array($menu)
+                    ? $menu
+                    : $menu->toArray();
 
-                if (($menu['route'] ?? null) === '/menus' && $tenant !== 'desenvolvedor') {
-                    return null;
-                }
-
+                /*
+                * Primeiro filtra os filhos recursivamente.
+                */
                 if (!empty($menu['children'])) {
                     $menu['children'] = $this->filterMenusByPermission(
-                        $menu['children'],
-                        $permissions
+                        $menu['children']
                     );
                 }
 
-                if (!empty($menu['children'])) {
-                    return $menu;
+                /*
+                * Menu agrupador.
+                *
+                * Exemplo: Administração (#)
+                * Só aparece se possuir pelo menos um filho autorizado.
+                */
+                if (
+                    ($menu['route'] ?? null) === '#' ||
+                    ($menu['url'] ?? null) === '#'
+                ) {
+                    return !empty($menu['children'])
+                        ? $menu
+                        : null;
                 }
 
+                /*
+                * Dashboard sempre disponível para usuário autenticado.
+                */
                 if (($menu['route'] ?? null) === '/') {
                     return $menu;
                 }
 
-                if (($menu['route'] ?? null) === '#' || ($menu['url'] ?? null) === '#') {
+                /*
+                * Menu sem rota válida não deve aparecer.
+                */
+                $route = $menu['route'] ?? null;
+
+                if (empty($route)) {
                     return null;
                 }
 
-                $slug = trim($menu['route'] ?? '', '/');
+                /*
+                * /users       → users
+                * /roles       → roles
+                * /permissions → permissions
+                * /menus       → menus
+                */
+                $permission = trim($route, '/');
 
-                if (in_array($slug, $permissions, true)) {
+                if ($this->aclService->can($permission)) {
                     return $menu;
                 }
 

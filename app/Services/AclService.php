@@ -11,21 +11,21 @@ class AclService
     public function can(string $permission): bool
     {
         /*
-         * O CRUD de menus é exclusivo do tenant desenvolvedor.
+         * CRUD de menus é exclusivo do tenant desenvolvedor.
          */
         if ($permission === self::MENUS_PERMISSION) {
             return $this->isDeveloperTenant();
         }
 
         /*
-         * Administrador possui acesso total aos demais módulos.
+         * Administrativo acessa todos os demais módulos.
          */
         if ($this->isAdministrator()) {
             return true;
         }
 
         /*
-         * Demais usuários dependem das permissões do perfil.
+         * Outros perfis dependem das permissões vinculadas.
          */
         return $this->hasPermission($permission);
     }
@@ -42,14 +42,37 @@ class AclService
 
     public function hasPermission(string $permission): bool
     {
-        return collect(session('user.role.permissions', []))
-            ->contains(function ($item) use ($permission) {
+        return in_array(
+            $permission,
+            $this->permissionSlugs(),
+            true
+        );
+    }
 
-                if (is_array($item)) {
-                    return ($item['slug'] ?? null) === $permission;
+    public function permissionSlugs(): array
+    {
+        return collect(session('user.role.permissions', []))
+            ->map(function ($permission) {
+                if (is_array($permission)) {
+                    return $permission['slug'] ?? null;
                 }
 
-                return ($item->slug ?? null) === $permission;
-            });
+                return $permission->slug ?? null;
+            })
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values()
+            ->toArray();
+    }
+
+    public function accessSignature(): string
+    {
+        $tenant = request()->route('tenant') ?? '';
+        $role = session('user.role.name', '');
+
+        $permissions = implode('|', $this->permissionSlugs());
+
+        return hash('sha256',"{$tenant}|{$role}|{$permissions}");
     }
 }
