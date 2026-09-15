@@ -21,8 +21,7 @@ class SidebarMenuService
         try {
             $permissionSignature = $this->permissionSignature();
 
-            if (!session()->has('sidebar')
-                || session('sidebar_permission_signature') !== $permissionSignature) {
+            if (!session()->has('sidebar') || session('sidebar_permission_signature') !== $permissionSignature) {
                 $this->refreshSidebarSession();
             }
 
@@ -278,10 +277,16 @@ class SidebarMenuService
 
     private function filterMenusByPermission($menus, array $permissions): array
     {
+        $tenant = request()->route('tenant');
+
         return collect($menus)
-            ->map(function ($menu) use ($permissions) {
+            ->map(function ($menu) use ($permissions, $tenant) {
 
                 $menu = is_array($menu) ? $menu : $menu->toArray();
+
+                if (($menu['route'] ?? null) === '/menus' && $tenant !== 'desenvolvedor') {
+                    return null;
+                }
 
                 if (!empty($menu['children'])) {
                     $menu['children'] = $this->filterMenusByPermission(

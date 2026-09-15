@@ -76,6 +76,8 @@ class LoginController extends Controller
             ], 403);
         }
 
+        $this->userService->addSessionVariables($user->id);
+
         return redirect("/{$tenant->slug}/dashboard");
     }
 

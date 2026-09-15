@@ -10,9 +10,9 @@ class TenantSeeder extends Seeder
     public function run(): void
     {
         Tenant::updateOrCreate(
-            ['slug' => 'tenant-padrao'],
+            ['slug' => 'desenvolvedor'],
             [
-                'name' => 'Tenant Padrão',
+                'name' => 'Desenvolvedor do Sistema',
                 'active' => true,
             ]
         );

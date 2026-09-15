@@ -15,7 +15,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $tenant = Tenant::where('slug', 'tenant-padrao')->firstOrFail();
+        $tenant = Tenant::where('slug', 'desenvolvedor')->firstOrFail();
 
         Role::updateOrCreate(
             [

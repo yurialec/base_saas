@@ -17,7 +17,7 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $tenant = Tenant::where('slug', 'tenant-padrao')->firstOrFail();
+        $tenant = Tenant::where('slug', 'desenvolvedor')->firstOrFail();
         $permissions = Permission::where('tenant_id', $tenant->id)->pluck('id');
         $roleAdmin = Role::where('tenant_id', $tenant->id)
             ->where('name', 'Administrativo')

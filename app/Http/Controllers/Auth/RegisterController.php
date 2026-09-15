@@ -8,6 +8,8 @@ use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Services\UserService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,14 +18,18 @@ use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
+    protected $userService;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(UserService $userService)
     {
         $this->middleware('guest');
+
+        $this->userService = $userService;
     }
 
     /**
@@ -79,7 +85,15 @@ class RegisterController extends Controller
             ]);
         });
 
+        Auth::login($user);
 
+        $request->session()->regenerate();
+
+        $tenant = $user->tenant;
+
+        $this->userService->addSessionVariables($user->id);
+
+        return redirect("/{$tenant->slug}/dashboard");
     }
 
     /**

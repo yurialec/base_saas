@@ -16,7 +16,7 @@ class AddRoleToUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $tenant = Tenant::where('slug', 'tenant-padrao')->firstOrFail();
+        $tenant = Tenant::where('slug', 'desenvolvedor')->firstOrFail();
         $user = User::where('tenant_id', $tenant->id)
             ->where('email', 'yuri@email.com')
             ->first();
