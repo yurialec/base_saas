@@ -119,7 +119,7 @@ export default {
         search() {
             this.isLoading = true;
 
-            axios.get('/api/users/list')
+            axios.get('/users/list')
                 .then(response => {
                     this.users = response.data;
                 })
@@ -132,7 +132,7 @@ export default {
         },
         deleteUser(id) {
             this.confirm('', 'Deseja excluir este registro?').then(() => {
-                axios.delete(`/api/users/delete/${id}`)
+                axios.delete(`/users/delete/${id}`)
                     .then(response => {
                         alertSuccess('Registro excluÃ­do com sucesso!');
                         this.search();

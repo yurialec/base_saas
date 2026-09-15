@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
@@ -20,8 +19,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth:sanctum'])->group(function () {
-
+Route::prefix('{tenant}')->middleware(['auth:sanctum','tenant'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/sidebar', [HomeController::class, 'getSideBar']);
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');

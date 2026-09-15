@@ -133,9 +133,9 @@ export default {
 
             try {
                 const [roleResponse, rolesResponse, permissionsResponse] = await Promise.all([
-                    axios.get(`/api/roles/find/${this.id}`),
-                    axios.get('/api/roles/dropdown-list'),
-                    axios.get('/api/permissions/list')
+                    axios.get(`/roles/find/${this.id}`),
+                    axios.get('/roles/dropdown-list'),
+                    axios.get('/permissions/list')
                 ]);
 
                 const role = Array.isArray(roleResponse.data)
@@ -155,7 +155,7 @@ export default {
             this.isLoading = true;
 
             try {
-                await axios.put(`/api/roles/update/${this.id}`, this.createRequestPayload());
+                await axios.put(`/roles/update/${this.id}`, this.createRequestPayload());
                 alertSuccess('Perfil alterado com sucesso!');
                 this.$router.push({ name: 'roles' });
             } catch (error) {

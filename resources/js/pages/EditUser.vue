@@ -94,7 +94,7 @@ export default {
         find() {
             this.isLoading = true;
 
-            axios.get(`/api/users/find/${this.id}`)
+            axios.get(`/users/find/${this.id}`)
                 .then(response => {
                     this.user = response.data;
                 })
@@ -107,7 +107,7 @@ export default {
         },
         searchRoles() {
             this.isLoading = true;
-            axios.get(`/api/users/roles/list`)
+            axios.get(`/users/roles/list`)
                 .then(response => {
                     this.roles = response.data;
                 })
@@ -127,7 +127,7 @@ export default {
             }
 
             this.isLoading = true;
-            axios.put(`/api/users/update/${this.id}`, this.user)
+            axios.put(`/users/update/${this.id}`, this.user)
                 .then(response => {
                     this.$router.push({ name: 'users' });
                 })

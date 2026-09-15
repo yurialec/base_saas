@@ -46,7 +46,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
   methods: {
     search: function search() {
       var _this = this;
-      axios.get("/api/roles/dropdown-list").then(function (response) {
+      axios.get("/roles/dropdown-list").then(function (response) {
         _this.roles = response.data;
       })["catch"](function (error) {
         alertDanger(error);
@@ -56,7 +56,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
     },
     searchPermissions: function searchPermissions() {
       var _this2 = this;
-      axios.get("/api/permissions/list").then(function (response) {
+      axios.get("/permissions/list").then(function (response) {
         _this2.permissions = response.data;
       })["catch"](function (error) {
         alertDanger(error);
@@ -71,7 +71,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
           return permission.id;
         })
       });
-      axios.post("/api/roles/store", payload).then(function (response) {
+      axios.post("/roles/store", payload).then(function (response) {
         alertSuccess('Perfil cadastrado com sucesso!');
       })["catch"](function (error) {
         alertDanger(error);

@@ -156,7 +156,7 @@ export default {
             this.isLoading = true;
 
             try {
-                const response = await axios.post('/api/menus/store', this.createRequestPayload());
+                const response = await axios.post('/menus/store', this.createRequestPayload());
                 alertSuccess('Menu cadastrado com sucesso!');
             } catch (error) {
                 alertDanger(error);
@@ -168,7 +168,7 @@ export default {
             this.isLoading = true;
 
             try {
-                const response = await axios.get('/api/menus/list-to-create');
+                const response = await axios.get('/menus/list-to-create');
                 this.menus = Array.isArray(response.data) ? response.data : [];
             } catch (error) {
                 this.menus = [];

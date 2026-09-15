@@ -79,7 +79,7 @@ export default {
         searchRoles() {
             this.isLoading = true;
 
-            axios.get('/api/roles/dropdown-list')
+            axios.get('/roles/dropdown-list')
                 .then(response => {
                     this.roles = Array.isArray(response.data) ? response.data : [];
                 })
@@ -93,7 +93,7 @@ export default {
         store() {
             this.isLoading = true;
 
-            axios.post('/api/users/store', this.user)
+            axios.post('/users/store', this.user)
                 .then(response => {
                     this.$router.push({ name: 'users' });
                 })

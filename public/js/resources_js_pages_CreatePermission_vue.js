@@ -27,7 +27,7 @@ __webpack_require__.r(__webpack_exports__);
     store: function store() {
       var _this = this;
       this.isLoading = true;
-      axios.post('/api/permissions/store', this.permission).then(function (response) {
+      axios.post('/permissions/store', this.permission).then(function (response) {
         _this.$router.push({
           name: 'permissions'
         });

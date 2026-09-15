@@ -161,8 +161,8 @@ export default {
 
             try {
                 const [menuResponse, menusResponse] = await Promise.all([
-                    axios.get(`/api/menus/find/${this.id}`),
-                    axios.get('/api/menus/list-to-create')
+                    axios.get(`/menus/find/${this.id}`),
+                    axios.get('/menus/list-to-create')
                 ]);
 
                 const menu = Array.isArray(menuResponse.data) ? menuResponse.data[0] : menuResponse.data;
@@ -184,7 +184,7 @@ export default {
             this.isLoading = true;
 
             try {
-                const response = await axios.put(`/api/menus/update/${this.id}`, this.createRequestPayload());
+                const response = await axios.put(`/menus/update/${this.id}`, this.createRequestPayload());
                 alertSuccess('Menu alterado com sucesso!');
             } catch (error) {
                 alertDanger(error);

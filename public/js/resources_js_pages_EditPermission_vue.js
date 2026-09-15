@@ -36,7 +36,7 @@ __webpack_require__.r(__webpack_exports__);
     find: function find() {
       var _this = this;
       this.isLoading = true;
-      axios.get("/api/permissions/find/".concat(this.id)).then(function (response) {
+      axios.get("/permissions/find/".concat(this.id)).then(function (response) {
         _this.permission = response.data;
       })["catch"](function (error) {
         alertDanger(error);
@@ -47,7 +47,7 @@ __webpack_require__.r(__webpack_exports__);
     update: function update() {
       var _this2 = this;
       this.isLoading = true;
-      axios.put("/api/permissions/update/".concat(this.id), this.permission).then(function (response) {
+      axios.put("/permissions/update/".concat(this.id), this.permission).then(function (response) {
         _this2.$router.push({
           name: 'permissions'
         });

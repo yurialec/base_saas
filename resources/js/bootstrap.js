@@ -5,7 +5,7 @@ try {
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap');
-} catch (e) { }
+} catch (e) {}
 
 /**
  * Axios
@@ -17,34 +17,19 @@ window.axios.defaults.headers.common['Accept'] = 'application/json';
 window.axios.defaults.withCredentials = true;
 
 /**
+ * Tenant
+ */
+const tenant = window.App?.tenant;
+
+if (tenant?.slug) {
+    window.axios.defaults.baseURL = `/api/${tenant.slug}`;
+}
+
+/**
  * CSRF Laravel
  */
 const token = document.head.querySelector('meta[name="csrf-token"]');
-const loginUrl = document.head.querySelector('meta[name="login-url"]')?.content;
 
 if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 }
-
-/**
- * Tratamento global das respostas
- */
-window.axios.interceptors.response.use(
-    response => response,
-
-    error => {
-        const status = error.response?.status;
-
-        if (status === 401) {
-            console.error('API retornou 401 - usuário não autenticado.');
-            console.error(error.response?.data);
-        }
-
-        if (status === 419) {
-            console.error('API retornou 419 - sessão ou CSRF expirado.');
-            console.error(error.response?.data);
-        }
-
-        return Promise.reject(error);
-    }
-);

@@ -46,7 +46,7 @@ export default {
                 'Essa ação não poderá ser desfeita.',
                 'Deseja excluir este item?'
             ).then(() => {
-                axios.delete(`/api/registros/123456`)
+                axios.delete(`/registros/123456`)
                     .then(() => {
                         alertSuccess('Registro excluído com sucesso!');
                     })

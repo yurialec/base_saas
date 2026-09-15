@@ -73,7 +73,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _this2.isLoading = true;
               _context.p = 1;
               _context.n = 2;
-              return Promise.all([axios.get("/api/menus/find/".concat(_this2.id)), axios.get('/api/menus/list-to-create')]);
+              return Promise.all([axios.get("/menus/find/".concat(_this2.id)), axios.get('/menus/list-to-create')]);
             case 2:
               _yield$Promise$all = _context.v;
               _yield$Promise$all2 = _slicedToArray(_yield$Promise$all, 2);
@@ -115,7 +115,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _this3.isLoading = true;
               _context2.p = 2;
               _context2.n = 3;
-              return axios.put("/api/menus/update/".concat(_this3.id), _this3.createRequestPayload());
+              return axios.put("/menus/update/".concat(_this3.id), _this3.createRequestPayload());
             case 3:
               response = _context2.v;
               alertSuccess('Menu alterado com sucesso!');

@@ -32,7 +32,7 @@ __webpack_require__.r(__webpack_exports__);
     searchRoles: function searchRoles() {
       var _this = this;
       this.isLoading = true;
-      axios.get('/api/roles/dropdown-list').then(function (response) {
+      axios.get('/roles/dropdown-list').then(function (response) {
         _this.roles = Array.isArray(response.data) ? response.data : [];
       })["catch"](function (error) {
         alertDanger(error);
@@ -43,7 +43,7 @@ __webpack_require__.r(__webpack_exports__);
     store: function store() {
       var _this2 = this;
       this.isLoading = true;
-      axios.post('/api/users/store', this.user).then(function (response) {
+      axios.post('/users/store', this.user).then(function (response) {
         _this2.$router.push({
           name: 'users'
         });

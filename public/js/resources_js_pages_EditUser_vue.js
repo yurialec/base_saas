@@ -40,7 +40,7 @@ __webpack_require__.r(__webpack_exports__);
     find: function find() {
       var _this = this;
       this.isLoading = true;
-      axios.get("/api/users/find/".concat(this.id)).then(function (response) {
+      axios.get("/users/find/".concat(this.id)).then(function (response) {
         _this.user = response.data;
       })["catch"](function (error) {
         alertDanger(error);
@@ -51,7 +51,7 @@ __webpack_require__.r(__webpack_exports__);
     searchRoles: function searchRoles() {
       var _this2 = this;
       this.isLoading = true;
-      axios.get("/api/users/roles/list").then(function (response) {
+      axios.get("/users/roles/list").then(function (response) {
         _this2.roles = response.data;
       })["catch"](function (error) {
         alertDanger(error);
@@ -67,7 +67,7 @@ __webpack_require__.r(__webpack_exports__);
         delete this.user.password;
       }
       this.isLoading = true;
-      axios.put("/api/users/update/".concat(this.id), this.user).then(function (response) {
+      axios.put("/users/update/".concat(this.id), this.user).then(function (response) {
         _this3.$router.push({
           name: 'users'
         });

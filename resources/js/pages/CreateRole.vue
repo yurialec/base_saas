@@ -103,7 +103,7 @@ export default {
     },
     methods: {
         search() {
-            axios.get(`/api/roles/dropdown-list`)
+            axios.get(`/roles/dropdown-list`)
                 .then(response => {
                     this.roles = response.data;
                 })
@@ -115,7 +115,7 @@ export default {
                 });
         },
         searchPermissions() {
-            axios.get(`/api/permissions/list`)
+            axios.get(`/permissions/list`)
                 .then(response => {
                     this.permissions = response.data;
                 })
@@ -132,7 +132,7 @@ export default {
                 permissions: this.role.permissions.map(permission => permission.id),
             };
 
-            axios.post(`/api/roles/store`, payload)
+            axios.post(`/roles/store`, payload)
                 .then(response => {
                     alertSuccess('Perfil cadastrado com sucesso!');
                 })

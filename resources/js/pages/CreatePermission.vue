@@ -66,7 +66,7 @@ export default {
     methods: {
         store() {
             this.isLoading = true;
-            axios.post('/api/permissions/store', this.permission)
+            axios.post('/permissions/store', this.permission)
                 .then(response => {
                     this.$router.push({ name: 'permissions' });
                 })

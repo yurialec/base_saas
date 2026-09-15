@@ -202,7 +202,7 @@ export default {
     methods: {
         search() {
             this.isLoading = true;
-            axios.get(`/api/roles/list`)
+            axios.get(`/roles/list`)
                 .then(response => {
                     this.roles = response.data;
                 })
@@ -278,7 +278,7 @@ export default {
 
             this.confirm('', 'Deseja excluir este perfil?').then(() => {
                 this.isLoading = true;
-                axios.delete(`/api/roles/delete/${id}`)
+                axios.delete(`/roles/delete/${id}`)
                     .then(response => {
                         alertSuccess('Registro excluido com sucesso!');
                         this.search();

@@ -24,7 +24,7 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 
-Route::prefix('{tenant}')->middleware(['auth'])->group(function () {
+Route::prefix('{tenant}')->middleware(['auth', 'tenant'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('tenant.logout');
     Route::get('/{any?}', function () {
         return view('layouts.app_admin');

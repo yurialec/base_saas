@@ -78,7 +78,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _this2.isLoading = true;
               _context.p = 1;
               _context.n = 2;
-              return Promise.all([axios.get("/api/roles/find/".concat(_this2.id)), axios.get('/api/roles/dropdown-list'), axios.get('/api/permissions/list')]);
+              return Promise.all([axios.get("/roles/find/".concat(_this2.id)), axios.get('/roles/dropdown-list'), axios.get('/permissions/list')]);
             case 2:
               _yield$Promise$all = _context.v;
               _yield$Promise$all2 = _slicedToArray(_yield$Promise$all, 3);
@@ -115,7 +115,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _this3.isLoading = true;
               _context2.p = 1;
               _context2.n = 2;
-              return axios.put("/api/roles/update/".concat(_this3.id), _this3.createRequestPayload());
+              return axios.put("/roles/update/".concat(_this3.id), _this3.createRequestPayload());
             case 2:
               alertSuccess('Perfil alterado com sucesso!');
               _this3.$router.push({

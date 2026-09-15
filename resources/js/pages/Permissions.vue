@@ -121,7 +121,7 @@ export default {
     },
     methods: {
         search() {
-            axios.get(`/api/permissions/list`)
+            axios.get(`/permissions/list`)
                 .then(response => {
                     this.permissions = response.data;
                 })
@@ -143,7 +143,7 @@ export default {
         },
         deletePermission(id) {
             this.confirm('', 'Deseja excluir esta permissão?').then(() => {
-                axios.delete(`/api/permissions/delete/${id}`)
+                axios.delete(`/permissions/delete/${id}`)
                     .then(response => {
                         alertSuccess('Permissão excluída com sucesso!');
                         this.search();

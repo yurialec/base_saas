@@ -102,7 +102,7 @@ export default {
     methods: {
         search() {
             this.isLoading = true;
-            axios.get(`/api/profile`)
+            axios.get(`/profile`)
                 .then(response => {
                     this.user = {
                         ...response.data,
@@ -127,7 +127,7 @@ export default {
                 password_confirmation: this.user.password_confirmation || null,
             };
 
-            axios.put(`/api/profile/update`, payload)
+            axios.put(`/profile/update`, payload)
                 .then(response => {
                     this.user = {
                         ...response.data.user,

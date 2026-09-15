@@ -80,7 +80,7 @@ export default {
         find() {
             this.isLoading = true;
 
-            axios.get(`/api/permissions/find/${this.id}`)
+            axios.get(`/permissions/find/${this.id}`)
                 .then(response => {
                     this.permission = response.data;
                 })
@@ -94,7 +94,7 @@ export default {
         update() {
             this.isLoading = true;
 
-            axios.put(`/api/permissions/update/${this.id}`, this.permission)
+            axios.put(`/permissions/update/${this.id}`, this.permission)
                 .then(response => {
                     this.$router.push({ name: 'permissions' });
                 })

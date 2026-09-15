@@ -62,7 +62,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _this.isLoading = true;
               _context.p = 2;
               _context.n = 3;
-              return axios.post('/api/menus/store', _this.createRequestPayload());
+              return axios.post('/menus/store', _this.createRequestPayload());
             case 3:
               response = _context.v;
               alertSuccess('Menu cadastrado com sucesso!');
@@ -92,7 +92,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _this2.isLoading = true;
               _context2.p = 1;
               _context2.n = 2;
-              return axios.get('/api/menus/list-to-create');
+              return axios.get('/menus/list-to-create');
             case 2:
               response = _context2.v;
               _this2.menus = Array.isArray(response.data) ? response.data : [];

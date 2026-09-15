@@ -211,7 +211,7 @@ export default {
             this.isLoading = true;
 
             try {
-                const response = await axios.get('/api/menus/list');
+                const response = await axios.get('/menus/list');
                 this.menus = Array.isArray(response.data)
                     ? response.data
                     : response.data.menus || [];
@@ -290,7 +290,7 @@ export default {
             
             this.confirm('Essa ação não poderá ser desfeita.', 'Deseja excluir este item?').then(() => {
                     this.isLoading = true;
-                    axios.delete(`/api/menus/${menuId}`)
+                    axios.delete(`/menus/${menuId}`)
                         .then(response => {
                             alertSuccess('Registro Excluido com sucesso!');
                             this.search();
@@ -309,7 +309,7 @@ export default {
             }
 
             this.isLoading = true;
-            axios.post(`/api/menus/change-menu-order/${menuId}`)
+            axios.post(`/menus/change-menu-order/${menuId}`)
                 .then(response => {
                     this.search();
                 })

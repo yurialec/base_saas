@@ -6,13 +6,10 @@ import roleRoutes from './roles';
 import permissionRoutes from './permissions';
 import usersRoutes from './users';
 
-const publicRoutes = ['login', 'register'];
-const firstPathSegment = window.location.pathname.split('/')[1];
-
-const base = publicRoutes.includes(firstPathSegment) ? '/' : `/${firstPathSegment}/`;
+const tenant = window.App.tenant;
 
 const router = createRouter({
-    history: createWebHistory(base),
+    history: createWebHistory(`/${tenant.slug}/`),
 
     routes: [
         ...adminRoutes,
