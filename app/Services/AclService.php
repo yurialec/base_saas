@@ -32,7 +32,7 @@ class AclService
 
     public function isDeveloperTenant(): bool
     {
-        return request()->route('tenant') === self::DEVELOPER_TENANT;
+        return $this->tenantSlug() === self::DEVELOPER_TENANT;
     }
 
     public function isAdministrator(): bool
@@ -68,11 +68,17 @@ class AclService
 
     public function accessSignature(): string
     {
-        $tenant = request()->route('tenant') ?? '';
+        $tenant = $this->tenantSlug();
         $role = session('user.role.name', '');
 
         $permissions = implode('|', $this->permissionSlugs());
 
         return hash('sha256',"{$tenant}|{$role}|{$permissions}");
+    }
+
+    private function tenantSlug(): string
+    {
+        $route = request()->route();
+        return $route ? (string) $route->originalParameter('tenant', '') : '';
     }
 }

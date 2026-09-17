@@ -6,6 +6,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\RemoveTenantRouteParameter;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('{tenant}')->middleware(['auth:sanctum','tenant'])->group(function () {
+Route::prefix('{tenant}')->middleware(['auth:sanctum', 'tenant', 'clear_route'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/sidebar', [HomeController::class, 'getSideBar']);
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');

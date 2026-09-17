@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'acl' => \App\Http\Middleware\Acl::class,
         'tenant' => \App\Http\Middleware\EnsureTenant::class,
+        'clear_route' => \App\Http\Middleware\RemoveTenantRouteParameter::class,
     ];
 }
