@@ -9,7 +9,6 @@ class AddPhoneAndCpfCnpjToTenantsTable extends Migration
     public function up()
     {
         Schema::table('tenants', function (Blueprint $table) {
-            // Empresas existentes permanecem válidas sem os novos dados.
             $table->string('phone', 15)->nullable();
             $table->string('cpf_cnpj', 14)->nullable();
         });

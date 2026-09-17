@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\TenantScope;
 use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,9 +22,6 @@ class Role extends Model
         'tenant_id',
     ];
 
-    /**
-     * Mantém uma árvore Nested Set independente para cada tenant.
-     */
     protected function getScopeAttributes(): array
     {
         return ['tenant_id'];
@@ -31,11 +29,19 @@ class Role extends Model
 
     public function permissions()
     {
-        return $this->belongsToMany(
+        $relation = $this->belongsToMany(
             Permission::class,
             'role_permission',
             'role_id',
             'permission_id'
         );
+
+        $tenantId = TenantScope::currentTenantId();
+
+        if ($tenantId !== null) {
+            $relation->withPivotValue('tenant_id', $tenantId);
+        }
+
+        return $relation;
     }
 }
