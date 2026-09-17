@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterCompanyRequest;
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\RolePermission;
 use App\Models\Tenant;
@@ -68,10 +69,43 @@ class RegisterController extends Controller
                 'tenant_id' => $tenant->id,
             ]);
 
-            foreach ([2, 3, 4] as $permissionId) {
+            $permissions = [
+                [
+                    'name' => 'Listar Perfis',
+                    'slug' => 'roles',
+                    'description' => 'Permissão para listar todos os perfis do sistema.',
+                ],
+                [
+                    'name' => 'Listar Permissões',
+                    'slug' => 'permissions',
+                    'description' => 'Permissão para listar uma permissão existente no sistema.',
+                ],
+                [
+                    'name' => 'Listar Usuários',
+                    'slug' => 'users',
+                    'description' => 'Permissão para listar todos os usuários do sistema.',
+                ],
+            ];
+
+            foreach ($permissions as $permission) {
+                $createdPermission = Permission::updateOrCreate(
+                    [
+                        'slug' => $permission['slug'],
+                        'tenant_id' => $tenant->id,
+                    ],
+                    $permission + [
+                        'is_active' => true,
+                        'tenant_id' => $tenant->id,
+                    ]
+                );
+
+                if (!in_array($createdPermission->slug, ['roles', 'permissions', 'users'], true)) {
+                    continue;
+                }
+
                 RolePermission::create([
                     'role_id' => $role->id,
-                    'permission_id' => $permissionId,
+                    'permission_id' => $createdPermission->id,
                     'tenant_id' => $tenant->id,
                 ]);
             }
@@ -109,7 +143,7 @@ class RegisterController extends Controller
         $suffix = 2;
 
         while (Tenant::where('slug', $slug)->exists()) {
-            $slug = $baseSlug.'-'.$suffix;
+            $slug = $baseSlug . '-' . $suffix;
             $suffix++;
         }
 
