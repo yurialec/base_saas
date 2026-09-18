@@ -14,14 +14,11 @@ class AddTenantIdToUsersTable extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('tenant_id')
-                ->nullable()
-                ->after('id')
-                ->constrained('tenants')
-                ->cascadeOnUpdate()
-                ->restrictOnDelete();
-
-            $table->index('tenant_id');
+            $table->unsignedBigInteger('tenant_id');
+            $table->foreign('tenant_id')
+                ->references('id')
+                ->on('tenants')
+                ->onDelete('cascade');
         });
     }
 

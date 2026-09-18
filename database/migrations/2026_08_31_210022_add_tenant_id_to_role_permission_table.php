@@ -14,13 +14,11 @@ class AddTenantIdToRolePermissionTable extends Migration
     public function up(): void
     {
         Schema::table('role_permission', function (Blueprint $table) {
-            $table->foreignId('tenant_id')
-                ->nullable()
-                ->after('id')
-                ->constrained('tenants')
-                ->cascadeOnUpdate()
-                ->restrictOnDelete();
-
+            $table->unsignedBigInteger('tenant_id');
+            $table->foreign('tenant_id')
+                ->references('id')
+                ->on('tenants')
+                ->onDelete('cascade');
             $table->index('tenant_id');
         });
     }
