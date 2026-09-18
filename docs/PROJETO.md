@@ -129,5 +129,5 @@ cadastro de tenants;
 cadastro de usuários;
 cadastro de perfis;
 cadastro de permissões.
-
-Os próximos passos deverão priorizar a implementação do controle de acesso, isolamento dos dados por tenant e estrutura de módulos.
+controle de acesso.
+isolamento dos dados por tenant.
