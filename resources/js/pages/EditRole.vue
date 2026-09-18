@@ -128,41 +128,43 @@ export default {
         this.loadData();
     },
     methods: {
-        async loadData() {
+        loadData() {
             this.isLoading = true;
 
-            try {
-                const [roleResponse, rolesResponse, permissionsResponse] = await Promise.all([
-                    axios.get(`/roles/find/${this.id}`),
-                    axios.get('/roles/list-permissions'),
-                    axios.get('/permissions/list')
-                ]);
+            Promise.all([
+                axios.get(`/roles/find/${this.id}`),
+                axios.get('/roles/dropdown-list'),
+                axios.get('/roles/list-permissions')
+            ])
+                .then(([roleResponse, rolesResponse, permissionsResponse]) => {
+                    const role = Array.isArray(roleResponse.data)
+                        ? roleResponse.data[0]
+                        : roleResponse.data;
 
-                const role = Array.isArray(roleResponse.data)
-                    ? roleResponse.data[0]
-                    : roleResponse.data;
-
-                this.role = this.normalizeRole(role);
-                this.roles = Array.isArray(rolesResponse.data) ? rolesResponse.data : [];
-                this.permissions = Array.isArray(permissionsResponse.data) ? permissionsResponse.data : [];
-            } catch (error) {
-                alertDanger(error);
-            } finally {
-                this.isLoading = false;
-            }
+                    this.role = this.normalizeRole(role);
+                    this.roles = Array.isArray(rolesResponse.data) ? rolesResponse.data : [];
+                    this.permissions = Array.isArray(permissionsResponse.data) ? permissionsResponse.data : [];
+                })
+                .catch(error => {
+                    alertDanger(error);
+                })
+                .finally(() => {
+                    this.isLoading = false;
+                });
         },
-        async update() {
+        update() {
             this.isLoading = true;
 
-            try {
-                await axios.put(`/roles/update/${this.id}`, this.createRequestPayload());
-                alertSuccess('Perfil alterado com sucesso!');
-                this.$router.push({ name: 'roles' });
-            } catch (error) {
-                alertDanger(error);
-            } finally {
-                this.isLoading = false;
-            }
+            axios.put(`/roles/update/${this.id}`, this.createRequestPayload())
+                .then(() => {
+                    alertSuccess('Perfil alterado com sucesso!');
+                })
+                .catch(error => {
+                    alertDanger(error);
+                })
+                .finally(() => {
+                    this.isLoading = false;
+                });
         },
         normalizeRole(role) {
             const normalizedRole = role || {};

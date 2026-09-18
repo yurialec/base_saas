@@ -37,25 +37,12 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="rolePermissions" class="form-label">Permissões</label>
-                                <Multiselect
-                                    id="rolePermissions"
-                                    v-model="role.permissions"
-                                    :options="permissions"
-                                    :multiple="true"
-                                    :close-on-select="false"
-                                    :clear-on-select="false"
-                                    :preserve-search="true"
-                                    :hide-selected="true"
-                                    track-by="id"
-                                    label="name"
-                                    placeholder="Selecione uma ou mais permissões"
-                                    select-label="Selecionar"
-                                    selected-label="Selecionada"
-                                    deselect-label="Remover"
-                                    tag-placeholder="Adicionar"
-                                    :show-no-options="false"
-                                    :disabled="isLoading"
-                                >
+                                <Multiselect id="rolePermissions" v-model="role.permissions" :options="permissions"
+                                    :multiple="true" :close-on-select="false" :clear-on-select="false"
+                                    :preserve-search="true" :hide-selected="true" track-by="id" label="name"
+                                    placeholder="Selecione uma ou mais permissões" select-label="Selecionar"
+                                    selected-label="Selecionada" deselect-label="Remover" tag-placeholder="Adicionar"
+                                    :show-no-options="false" :disabled="isLoading">
                                     <template #noResult>
                                         Nenhuma permissão encontrada.
                                     </template>
@@ -132,9 +119,12 @@ export default {
                 permissions: this.role.permissions.map(permission => permission.id),
             };
 
+            this.isLoading = true;
+
             axios.post(`/roles/store`, payload)
                 .then(response => {
                     alertSuccess('Perfil cadastrado com sucesso!');
+                    this.$router.push({ name: 'roles' });
                 })
                 .catch(error => {
                     alertDanger(error);

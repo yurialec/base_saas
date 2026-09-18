@@ -37,6 +37,12 @@ class RoleController extends Controller
     {
         $role = $this->roleService->create($request->validated());
 
+        if ($role === null) {
+            return response()->json([
+                'message' => 'Nao foi possivel criar o perfil.'
+            ], 500);
+        }
+
         return response()->json($role, 201);
     }
 

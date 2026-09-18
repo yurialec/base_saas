@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Scopes\TenantScope;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreRoleRequest extends FormRequest
 {
@@ -23,10 +25,17 @@ class StoreRoleRequest extends FormRequest
      */
     public function rules()
     {
+        $parentRoleRule = Rule::exists('roles', 'id');
+        $tenantId = TenantScope::currentTenantId();
+
+        if ($tenantId !== null) {
+            $parentRoleRule->where('tenant_id', $tenantId);
+        }
+
         return [
             'name' => ['required', 'string', 'max:255', 'unique:roles,name'],
             'description' => ['nullable', 'string'],
-            'parent_id' => ['nullable', 'integer', 'exists:roles,id'],
+            'parent_id' => ['nullable', 'integer', $parentRoleRule],
             'permissions' => ['nullable', 'array'],
             'permissions.*' => ['integer', 'exists:permissions,id'],
         ];

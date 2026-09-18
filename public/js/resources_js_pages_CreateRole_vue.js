@@ -71,8 +71,12 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
           return permission.id;
         })
       });
+      this.isLoading = true;
       axios.post("/roles/store", payload).then(function (response) {
         alertSuccess('Perfil cadastrado com sucesso!');
+        _this3.$router.push({
+          name: 'roles'
+        });
       })["catch"](function (error) {
         alertDanger(error);
       })["finally"](function () {

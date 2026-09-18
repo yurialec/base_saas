@@ -75,7 +75,8 @@ class RoleService
                 'message' => $e->getMessage(),
                 'data' => $data,
             ]);
-            return null;
+
+            throw $e;
         }
     }
 

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Permission;
 use App\Models\Role;
+use App\Scopes\TenantScope;
 
 class RoleRepository
 {
@@ -60,6 +61,12 @@ class RoleRepository
     {
         $permissionIds = $data['permissions'] ?? [];
         unset($data['permissions']);
+
+        $tenantId = TenantScope::currentTenantId();
+
+        if ($tenantId !== null) {
+            $data = array_merge(['tenant_id' => $tenantId], $data);
+        }
 
         $role = $this->role->create($data);
         $role->permissions()->sync($permissionIds);
