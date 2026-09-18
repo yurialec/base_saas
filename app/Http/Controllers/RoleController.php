@@ -27,6 +27,12 @@ class RoleController extends Controller
         return response()->json($roles);
     }
 
+    public function listPermissions()
+    {
+        $permissions = $this->roleService->listPermissions();
+        return response()->json($permissions);
+    }
+
     public function store(StoreRoleRequest $request)
     {
         $role = $this->roleService->create($request->validated());

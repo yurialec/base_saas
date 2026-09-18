@@ -2,15 +2,18 @@
 
 namespace App\Repositories;
 
+use App\Models\Permission;
 use App\Models\Role;
 
 class RoleRepository
 {
     protected $role;
+    protected $permissions;
 
-    public function __construct(Role $role)
+    public function __construct(Role $role, Permission $permissions)
     {
         $this->role = $role;
+        $this->permissions = $permissions;
     }
 
     public function all()
@@ -32,6 +35,16 @@ class RoleRepository
                 'name'
             ])
             ->defaultOrder()
+            ->get();
+    }
+
+    public function listPermissions()
+    {
+        return $this->permissions
+            ->select([
+                'id',
+                'name'
+            ])
             ->get();
     }
 

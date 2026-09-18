@@ -39,6 +39,7 @@ Route::prefix('{tenant}')->middleware(['auth:sanctum', 'tenant', 'clear_route'])
     Route::prefix('roles')->middleware('acl:roles')->group(function () {
         Route::get('/list', [RoleController::class, 'index'])->name('roles.index');
         Route::get('/dropdown-list', [RoleController::class, 'dropdownList']);
+        Route::get('/list-permissions', [RoleController::class, 'listPermissions']);
         Route::post('/store', [RoleController::class, 'store']);
         Route::get('/find/{id}', [RoleController::class, 'show'])->whereNumber('id')->name('roles.show');
         Route::put('/update/{id}', [RoleController::class, 'update'])->whereNumber('id')->name('roles.update');

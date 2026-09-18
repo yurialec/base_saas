@@ -39,6 +39,18 @@ class RoleService
         }
     }
 
+    public function listPermissions()
+    {
+        try {
+            return $this->roleRepository->listPermissions();
+        } catch (\Throwable $e) {
+            Log::error('Erro ao carregar itens.', [
+                'message' => $e->getMessage(),
+            ]);
+            return collect();
+        }
+    }
+
     public function find($id)
     {
         try {

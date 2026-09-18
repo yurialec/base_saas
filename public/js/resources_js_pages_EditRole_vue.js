@@ -78,7 +78,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               _this2.isLoading = true;
               _context.p = 1;
               _context.n = 2;
-              return Promise.all([axios.get("/roles/find/".concat(_this2.id)), axios.get('/roles/dropdown-list'), axios.get('/permissions/list')]);
+              return Promise.all([axios.get("/roles/find/".concat(_this2.id)), axios.get('/roles/list-permissions'), axios.get('/permissions/list')]);
             case 2:
               _yield$Promise$all = _context.v;
               _yield$Promise$all2 = _slicedToArray(_yield$Promise$all, 3);

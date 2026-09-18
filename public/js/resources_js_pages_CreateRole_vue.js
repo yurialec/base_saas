@@ -56,7 +56,7 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
     },
     searchPermissions: function searchPermissions() {
       var _this2 = this;
-      axios.get("/permissions/list").then(function (response) {
+      axios.get("/roles/list-permissions").then(function (response) {
         _this2.permissions = response.data;
       })["catch"](function (error) {
         alertDanger(error);

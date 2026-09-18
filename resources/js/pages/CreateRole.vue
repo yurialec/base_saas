@@ -115,7 +115,7 @@ export default {
                 });
         },
         searchPermissions() {
-            axios.get(`/permissions/list`)
+            axios.get(`/roles/list-permissions`)
                 .then(response => {
                     this.permissions = response.data;
                 })

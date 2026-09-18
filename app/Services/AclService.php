@@ -6,14 +6,14 @@ class AclService
 {
     private const DEVELOPER_TENANT = 'desenvolvedor';
     private const ADMIN_ROLE = 'Administrativo';
-    private const MENUS_PERMISSION = 'menus';
+    private const DEVELOPER_PERMISSIONS = ['menus', 'permissions'];
 
     public function can(string $permission): bool
     {
         /*
-         * CRUD de menus é exclusivo do tenant desenvolvedor.
+         * CRUD de menus e permissões é exclusivo do tenant desenvolvedor.
          */
-        if ($permission === self::MENUS_PERMISSION) {
+        if (in_array($permission, self::DEVELOPER_PERMISSIONS, true)) {
             return $this->isDeveloperTenant();
         }
 
@@ -72,8 +72,9 @@ class AclService
         $role = session('user.role.name', '');
 
         $permissions = implode('|', $this->permissionSlugs());
+        $developerPermissions = implode('|', self::DEVELOPER_PERMISSIONS);
 
-        return hash('sha256',"{$tenant}|{$role}|{$permissions}");
+        return hash('sha256', "{$tenant}|{$role}|{$permissions}|{$developerPermissions}");
     }
 
     private function tenantSlug(): string

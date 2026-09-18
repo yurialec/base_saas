@@ -253,23 +253,6 @@ class SidebarMenuService
         );
     }
 
-    private function permissionSlugs(): array
-    {
-        return collect(session('user.role.permissions', []))
-            ->map(function ($permission) {
-                if (is_array($permission)) {
-                    return $permission['slug'] ?? null;
-                }
-
-                return $permission->slug ?? null;
-            })
-            ->filter()
-            ->unique()
-            ->sort()
-            ->values()
-            ->toArray();
-    }
-
     private function filterMenusByPermission($menus): array
     {
         return collect($menus)

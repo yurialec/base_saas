@@ -134,7 +134,7 @@ export default {
             try {
                 const [roleResponse, rolesResponse, permissionsResponse] = await Promise.all([
                     axios.get(`/roles/find/${this.id}`),
-                    axios.get('/roles/dropdown-list'),
+                    axios.get('/roles/list-permissions'),
                     axios.get('/permissions/list')
                 ]);
 

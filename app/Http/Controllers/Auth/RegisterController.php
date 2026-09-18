@@ -76,11 +76,6 @@ class RegisterController extends Controller
                     'description' => 'Permissão para listar todos os perfis do sistema.',
                 ],
                 [
-                    'name' => 'Listar Permissões',
-                    'slug' => 'permissions',
-                    'description' => 'Permissão para listar uma permissão existente no sistema.',
-                ],
-                [
                     'name' => 'Listar Usuários',
                     'slug' => 'users',
                     'description' => 'Permissão para listar todos os usuários do sistema.',
