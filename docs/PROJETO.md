@@ -32,7 +32,7 @@ Dessa forma, o desenvolvedor poderá utilizar uma estrutura pronta e concentrar 
 
 Linguagem: PHP 7.4
 Framework Backend: Laravel 8
-Banco de dados: SQLite
+Banco de dados: MySql
 Frontend: Vue.js
 Autenticação: Web, podendo ser alterada conforme a necessidade do projeto
 Arquitetura Backend:
