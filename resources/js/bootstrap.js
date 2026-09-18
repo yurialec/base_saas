@@ -8,6 +8,14 @@ try {
 } catch (e) {}
 
 /**
+ * App
+ */
+window.App = window.App || {};
+
+const tenant = window.App.tenant || null;
+const permissions = window.App.permissions || [];
+
+/**
  * Axios
  */
 window.axios = require('axios');
@@ -19,11 +27,14 @@ window.axios.defaults.withCredentials = true;
 /**
  * Tenant
  */
-const tenant = window.App?.tenant;
-
 if (tenant?.slug) {
     window.axios.defaults.baseURL = `/api/${tenant.slug}`;
 }
+
+/**
+ * Permissions
+ */
+window.App.permissions = permissions.map(permission => permission.slug);
 
 /**
  * CSRF Laravel

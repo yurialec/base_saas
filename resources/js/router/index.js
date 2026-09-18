@@ -20,4 +20,39 @@ const router = createRouter({
     ]
 });
 
+const DEVELOPER_TENANT = 'desenvolvedor';
+const ADMIN_ROLE = 'Administrativo';
+const DEVELOPER_PERMISSIONS = ['menus', 'permissions'];
+
+function canAccess(permission) {
+    if (!permission) {
+        return true;
+    }
+
+    const tenant = window.App.tenant || {};
+    const user = window.App.user || {};
+    const role = user.role || {};
+
+    if (DEVELOPER_PERMISSIONS.includes(permission)) {
+        return tenant.slug === DEVELOPER_TENANT;
+    }
+
+    if (role.name === ADMIN_ROLE) {
+        return true;
+    }
+
+    return Array.isArray(window.App.permissions)
+        && window.App.permissions.includes(permission);
+}
+
+router.beforeEach((to) => {
+    const permission = to.meta.permission;
+
+    if (canAccess(permission)) {
+        return true;
+    }
+
+    return { name: 'dashboard' };
+});
+
 export default router;

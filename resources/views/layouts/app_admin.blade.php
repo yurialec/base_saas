@@ -14,7 +14,9 @@
     <div id="app"></div>
     <script>
         window.App = {
-            tenant: @json(auth()->user()->tenant)
+            user: @json(session('user')),
+            tenant: @json(session('user.tenant')),
+            permissions: @json(session('user.role.permissions'))
         };
     </script>
     <script src="{{ mix('js/app.js') }}" defer></script>

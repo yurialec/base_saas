@@ -4,17 +4,20 @@ export default [
     {
         path: '/menus',
         name: 'menus',
-        component: Menus
+        component: Menus,
+        meta: { permission: 'menus' }
     },
     {
         path: '/menus/create',
         name: 'menus.create',
-        component: () => import('../pages/CreateMenu.vue')
+        component: () => import('../pages/CreateMenu.vue'),
+        meta: { permission: 'menus' }
     },
     {
         path: '/menus/edit/:id',
         name: 'menus.edit',
         component: () => import('../pages/EditMenu.vue'),
-        props: true
+        props: true,
+        meta: { permission: 'menus' }
     }
 ];
