@@ -5,6 +5,7 @@ import menuRoutes from './menus';
 import roleRoutes from './roles';
 import permissionRoutes from './permissions';
 import usersRoutes from './users';
+import agendaRoutes from './agenda';
 
 const tenant = window.App.tenant;
 
@@ -16,7 +17,8 @@ const router = createRouter({
         ...menuRoutes,
         ...roleRoutes,
         ...permissionRoutes,
-        ...usersRoutes
+        ...usersRoutes,
+        ...agendaRoutes
     ]
 });
 

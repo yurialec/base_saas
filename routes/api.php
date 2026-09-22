@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PermissionController;
@@ -21,6 +22,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('{tenant}')->middleware(['auth:sanctum', 'tenant', 'clear_route'])->group(function () {
+    Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda.index');
+    Route::post('/agenda', [AgendaController::class, 'store'])->name('agenda.store');
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/sidebar', [HomeController::class, 'getSideBar']);
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
