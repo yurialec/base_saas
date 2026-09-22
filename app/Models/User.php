@@ -54,4 +54,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Tenant::class);
     }
+
+    public function googleAccount()
+    {
+        return $this->hasOne(SocialAccount::class)
+            ->where('provider', 'google');
+    }
 }

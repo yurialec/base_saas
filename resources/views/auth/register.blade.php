@@ -14,6 +14,18 @@
                         </div>
                     @endif
 
+                    @if (session('google_registration'))
+                        <div class="alert alert-info" role="alert">
+                            Conta Google autorizada. Complete os dados da empresa para finalizar o cadastro.
+                        </div>
+                    @else
+                        <div class="mb-4">
+                            <a href="{{ route('google.redirect', ['intent' => 'registration']) }}" class="btn btn-outline-danger btn-sm">
+                                Cadastrar com Google
+                            </a>
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
 
@@ -85,7 +97,7 @@
                                 <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required maxlength="255" autocomplete="name">
+                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name', data_get(session('google_registration'), 'name')) }}" required maxlength="255" autocomplete="name">
 
                                     @error('name')
                                         <span class="invalid-feedback" role="alert">
@@ -99,7 +111,7 @@
                                 <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required maxlength="255" autocomplete="email">
+                                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email', data_get(session('google_registration'), 'email')) }}" required maxlength="255" autocomplete="email" @if(session('google_registration')) readonly @endif>
 
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
@@ -109,6 +121,7 @@
                                 </div>
                             </div>
 
+                            @unless(session('google_registration'))
                             <div class="form-group row mb-3">
                                 <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
 
@@ -122,6 +135,7 @@
                                     @enderror
                                 </div>
                             </div>
+                            @endunless
 
                             <div class="form-group row mb-0">
                                 <div class="col-md-6 offset-md-4">

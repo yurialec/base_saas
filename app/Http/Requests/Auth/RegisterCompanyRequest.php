@@ -29,14 +29,19 @@ class RegisterCompanyRequest extends FormRequest
 
     public function rules()
     {
-        return [
+        $rules = [
             'company_name' => ['required', 'string', 'max:255'],
             'phone' => ['bail', 'required', 'string', 'regex:/^[1-9][0-9]{9,14}$/'],
             'cpf_cnpj' => ['bail', 'required', 'string', new CpfCnpj()],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8'],
         ];
+
+        if (! $this->session()->has('google_registration')) {
+            $rules['password'] = ['required', 'string', 'min:8'];
+        }
+
+        return $rules;
     }
 
     public function messages()

@@ -7,14 +7,14 @@ use App\Http\Requests\Auth\RegisterCompanyRequest;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\RolePermission;
+use App\Models\SocialAccount;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 class RegisterController extends Controller
@@ -52,8 +52,17 @@ class RegisterController extends Controller
     public function register(RegisterCompanyRequest $request)
     {
         $validated = $request->validated();
+        $googleRegistration = $request->session()->get('google_registration');
 
-        $user = DB::transaction(function () use ($validated) {
+        if ($googleRegistration && Str::lower($validated['email']) !== Str::lower($googleRegistration['email'])) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'email' => 'O e-mail deve ser o mesmo autorizado na conta Google.',
+                ]);
+        }
+
+        $user = DB::transaction(function () use ($validated, $googleRegistration) {
             $tenant = Tenant::create([
                 'name' => $validated['company_name'],
                 'phone' => $validated['phone'],
@@ -105,14 +114,32 @@ class RegisterController extends Controller
                 ]);
             }
 
-            return User::create([
+            $user = User::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
+                'password' => Hash::make($googleRegistration ? Str::random(64) : $validated['password']),
                 'tenant_id' => $tenant->id,
                 'role_id' => $role->id,
             ]);
+
+            if ($googleRegistration) {
+                SocialAccount::create([
+                    'user_id' => $user->id,
+                    'provider' => 'google',
+                    'provider_id' => $googleRegistration['provider_id'],
+                    'avatar' => $googleRegistration['avatar'],
+                    'access_token' => Crypt::decryptString($googleRegistration['access_token']),
+                    'refresh_token' => $googleRegistration['refresh_token']
+                        ? Crypt::decryptString($googleRegistration['refresh_token'])
+                        : null,
+                    'token_expires_at' => $googleRegistration['token_expires_at'],
+                ]);
+            }
+
+            return $user;
         });
+
+        $request->session()->forget('google_registration');
 
         Auth::login($user);
 
