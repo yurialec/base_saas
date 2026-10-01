@@ -49,7 +49,18 @@ class GoogleCalendarService
             try {
                 $token = $client->fetchAccessTokenWithRefreshToken($account->refresh_token);
             } catch (Throwable $exception) {
+                $invalidGrant = $this->isInvalidGrant($exception);
                 $this->logGoogleFailure('Falha ao renovar token de acesso Google.', $agenda, $exception);
+
+                if ($invalidGrant) {
+                    $this->invalidateConnection($account, $agenda);
+
+                    throw new RuntimeException(
+                        'A conexao com Google Calendar expirou ou foi revogada. Clique em "Reconectar Google Calendar" antes de sincronizar novamente.',
+                        (int) $exception->getCode(),
+                        $exception
+                    );
+                }
 
                 throw new RuntimeException(
                     'Nao foi possivel renovar a autorizacao Google.',
@@ -66,6 +77,14 @@ class GoogleCalendarService
                     'google_error' => $token['error'] ?? null,
                     'google_error_description' => $token['error_description'] ?? null,
                 ]);
+
+                if (($token['error'] ?? null) === 'invalid_grant') {
+                    $this->invalidateConnection($account, $agenda);
+
+                    throw new RuntimeException(
+                        'A conexao com Google Calendar expirou ou foi revogada. Clique em "Reconectar Google Calendar" antes de sincronizar novamente.'
+                    );
+                }
 
                 throw new RuntimeException('Nao foi possivel renovar a autorizacao Google.');
             }
@@ -159,5 +178,33 @@ class GoogleCalendarService
         }
 
         Log::channel('google_calendar')->error($message, $context);
+    }
+
+    private function isInvalidGrant(Throwable $exception): bool
+    {
+        if (! $exception instanceof ClientException || ! $exception->getResponse()) {
+            return false;
+        }
+
+        $response = json_decode((string) $exception->getResponse()->getBody(), true);
+
+        return is_array($response) && ($response['error'] ?? null) === 'invalid_grant';
+    }
+
+    private function invalidateConnection(SocialAccount $account, Agenda $agenda): void
+    {
+        // Mantém o access token expirado apenas porque a coluna atual não aceita NULL.
+        // Sem refresh token e com expiração no passado, a conexão deixa de estar "ready".
+        $account->refresh_token = null;
+        $account->token_expires_at = Carbon::now()->subSecond();
+        $account->save();
+
+        Log::channel('google_calendar')->notice('Conexao Google Calendar marcada como expirada.', [
+            'agenda_id' => $agenda->id,
+            'tenant_id' => $agenda->tenant_id,
+            'user_id' => $agenda->user_id,
+            'social_account_id' => $account->id,
+            'reason' => 'invalid_grant',
+        ]);
     }
 }
