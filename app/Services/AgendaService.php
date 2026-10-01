@@ -48,10 +48,16 @@ class AgendaService
             $integration = ['status' => 'synced', 'message' => 'Agendamento salvo e sincronizado com o Google Calendar.'];
         } catch (Throwable $exception) {
             // Nao registra tokens, comentario ou resposta completa do provedor.
-            Log::warning('Falha na integracao da agenda com Google Calendar.', [
+            Log::channel('google_calendar')->error('Falha na integracao da agenda com Google Calendar.', [
                 'agenda_id' => $agenda->id,
+                'tenant_id' => $agenda->tenant_id,
+                'user_id' => $agenda->user_id,
                 'exception' => get_class($exception),
                 'code' => $exception->getCode(),
+                'message' => $exception->getMessage(),
+                'previous_exception' => $exception->getPrevious()
+                    ? get_class($exception->getPrevious())
+                    : null,
             ]);
             $integration = [
                 'status' => 'pending',

@@ -10,13 +10,27 @@ use Google\Service\Calendar;
 use Google\Service\Calendar\Event;
 use Google\Service\Exception as GoogleServiceException;
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\ClientException;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
+use Throwable;
 
 class GoogleCalendarService
 {
     public function createEvent(Agenda $agenda): string
     {
         $account = SocialAccount::where('user_id', $agenda->user_id)->where('provider', 'google')->first();
+
+        Log::channel('google_calendar')->info('Iniciando sincronizacao de agendamento.', [
+            'agenda_id' => $agenda->id,
+            'tenant_id' => $agenda->tenant_id,
+            'user_id' => $agenda->user_id,
+            'google_account_found' => (bool) $account,
+            'has_refresh_token' => (bool) ($account && $account->refresh_token),
+            'token_expires_at' => $account && $account->token_expires_at
+                ? $account->token_expires_at->toIso8601String()
+                : null,
+        ]);
 
         if (!$account) {
             throw new RuntimeException('Conta Google nao vinculada.');
@@ -32,8 +46,27 @@ class GoogleCalendarService
                 throw new RuntimeException('Autorizacao Google expirada.');
             }
 
-            $token = $client->fetchAccessTokenWithRefreshToken($account->refresh_token);
+            try {
+                $token = $client->fetchAccessTokenWithRefreshToken($account->refresh_token);
+            } catch (Throwable $exception) {
+                $this->logGoogleFailure('Falha ao renovar token de acesso Google.', $agenda, $exception);
+
+                throw new RuntimeException(
+                    'Nao foi possivel renovar a autorizacao Google.',
+                    (int) $exception->getCode(),
+                    $exception
+                );
+            }
+
             if (empty($token['access_token']) || isset($token['error'])) {
+                Log::channel('google_calendar')->error('Google recusou a renovacao do token.', [
+                    'agenda_id' => $agenda->id,
+                    'tenant_id' => $agenda->tenant_id,
+                    'user_id' => $agenda->user_id,
+                    'google_error' => $token['error'] ?? null,
+                    'google_error_description' => $token['error_description'] ?? null,
+                ]);
+
                 throw new RuntimeException('Nao foi possivel renovar a autorizacao Google.');
             }
 
@@ -81,6 +114,7 @@ class GoogleCalendarService
             $created = $calendar->events->insert('primary', $event);
         } catch (GoogleServiceException $exception) {
             if ((int) $exception->getCode() !== 409) {
+                $this->logGoogleFailure('Falha ao criar evento no Google Calendar.', $agenda, $exception);
                 throw $exception;
             }
             $created = $calendar->events->get('primary', $eventId);
@@ -99,5 +133,31 @@ class GoogleCalendarService
         }
 
         return $eventId;
+    }
+
+    private function logGoogleFailure(string $message, Agenda $agenda, Throwable $exception): void
+    {
+        $context = [
+            'agenda_id' => $agenda->id,
+            'tenant_id' => $agenda->tenant_id,
+            'user_id' => $agenda->user_id,
+            'exception' => get_class($exception),
+            'code' => (int) $exception->getCode(),
+            'message' => $exception->getMessage(),
+        ];
+
+        if ($exception instanceof ClientException && $exception->getResponse()) {
+            $context['google_response'] = substr(
+                (string) $exception->getResponse()->getBody(),
+                0,
+                1000
+            );
+        }
+
+        if ($exception instanceof GoogleServiceException) {
+            $context['google_errors'] = $exception->getErrors();
+        }
+
+        Log::channel('google_calendar')->error($message, $context);
     }
 }

@@ -54,6 +54,13 @@ return [
             'days' => 14,
         ],
 
+        'google_calendar' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/google-calendar.log'),
+            'level' => env('GOOGLE_CALENDAR_LOG_LEVEL', 'debug'),
+            'days' => 30,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
