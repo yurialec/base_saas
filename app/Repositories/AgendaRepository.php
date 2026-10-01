@@ -33,6 +33,11 @@ class AgendaRepository implements AgendaRepositoryInterface
         return $this->query()->get();
     }
 
+    public function find(int $id): Agenda
+    {
+        return $this->query()->findOrFail($id);
+    }
+
     public function findByDate(string $date): Collection
     {
         return $this->query()->whereDate('data', $date)->get();

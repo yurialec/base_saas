@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\GoogleCalendarConnectionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,7 +32,12 @@ Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirectToGoo
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback'])
     ->name('google.callback');
 
+Route::get('/auth/google/calendar/callback', [GoogleCalendarConnectionController::class, 'callback'])
+    ->middleware('auth')->name('google.calendar.callback');
+
 Route::prefix('{tenant}')->middleware(['auth', 'tenant'])->group(function () {
+    Route::post('/agenda/google/connect', [GoogleCalendarConnectionController::class, 'redirect'])
+        ->middleware('clear_route')->name('google.calendar.connect');
     Route::get('/{any?}', function () {
         return view('layouts.app_admin');
     })->where('any', '.*');

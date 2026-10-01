@@ -6,6 +6,22 @@
         <div v-if="notice" class="alert" :class="noticeType" role="status">{{ notice }}</div>
         <div v-if="loadError" class="alert alert-danger" role="alert">{{ loadError }}</div>
 
+        <div class="card mb-4">
+            <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div>
+                    <h2 class="h6 mb-1">Google Calendar</h2>
+                    <p class="mb-0 text-muted">
+                        {{ calendar.linked ? 'Conta Google vinculada. Reconecte se a autorização expirar ou for revogada.' : 'Conecte sua conta Google para enviar os horários ao calendário.' }}
+                    </p>
+                    <small>Para enviar agendamentos pendentes, clique em Sincronizar.</small>
+                </div>
+                <button class="btn btn-outline-primary" type="button" @click="connectCalendar"
+                    :disabled="!connectionUrl || connecting || saving || syncingId !== null">
+                    {{ connecting ? 'Redirecionando…' : calendar.linked ? 'Reconectar Google Calendar' : 'Conectar Google Calendar' }}
+                </button>
+            </div>
+        </div>
+
         <div class="row g-4">
             <div class="col-12 col-lg-4">
                 <div class="card shadow-sm">
@@ -15,7 +31,7 @@
                             Fuso: {{ timezone }} · Duração: {{ duration }} minutos
                         </p>
                         <form @submit.prevent="schedule">
-                            <fieldset :disabled="saving || loading || !timezone">
+                            <fieldset :disabled="saving || loading || connecting || syncingId !== null || !timezone">
                                 <div class="mb-3">
                                     <label for="agenda-data" class="form-label">Data</label>
                                     <input id="agenda-data" v-model="form.data" type="date" class="form-control" required>
@@ -45,7 +61,7 @@
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <h2 class="h5 mb-0">Agendamentos por dia</h2>
                     <button class="btn btn-outline-secondary btn-sm" type="button"
-                        :disabled="loading || saving" @click="loadAppointments">Atualizar lista</button>
+                        :disabled="loading || saving || connecting || syncingId !== null" @click="loadAppointments">Atualizar lista</button>
                 </div>
                 <p v-if="loading" role="status">Carregando agendamentos…</p>
                 <p v-else-if="!groups.length && !loadError" class="text-muted">Nenhum agendamento cadastrado.</p>
@@ -64,6 +80,11 @@
                                 </span>
                             </div>
                             <p class="mb-0 mt-2 agenda-comment">{{ item.comentario }}</p>
+                            <button v-if="!item.google_event_id" type="button" class="btn btn-outline-primary btn-sm mt-2"
+                                :disabled="!calendar.ready || saving || loading || connecting || syncingId !== null"
+                                @click="syncAppointment(item)">
+                                {{ syncingId === item.id ? 'Sincronizando…' : 'Sincronizar' }}
+                            </button>
                         </li>
                     </ul>
                 </article>
@@ -81,6 +102,10 @@ export default {
             appointments: [],
             loading: false,
             saving: false,
+            connecting: false,
+            syncingId: null,
+            calendar: { linked: false, ready: false },
+            connectionUrl: '',
             timezone: '',
             duration: 30,
             notice: '',
@@ -108,6 +133,34 @@ export default {
         this.loadAppointments();
     },
     methods: {
+        async connectCalendar() {
+            if (this.connecting) return;
+            this.connecting = true;
+            try {
+                // Rota web com sessao e CSRF, fora do prefixo /api do axios.
+                const { data } = await axios.post(this.connectionUrl, {}, { baseURL: '/' });
+                window.location.assign(data.url);
+            } catch (error) {
+                this.connecting = false;
+                this.noticeType = 'alert-danger';
+                this.notice = 'Não foi possível iniciar a conexão. Atualize a página e tente novamente.';
+            }
+        },
+        async syncAppointment(item) {
+            if (this.syncingId !== null) return;
+            this.syncingId = item.id;
+            try {
+                const { data } = await axios.post('/agenda/' + item.id + '/sync');
+                this.appointments = this.appointments.map(record => record.id === item.id ? data.data : record);
+                this.notice = data.integration.message;
+                this.noticeType = data.integration.status === 'synced' ? 'alert-success' : 'alert-warning';
+            } catch (error) {
+                this.noticeType = 'alert-warning';
+                this.notice = 'Não foi possível confirmar a sincronização. Atualize a lista; se continuar pendente, tente Sincronizar novamente.';
+            } finally {
+                this.syncingId = null;
+            }
+        },
         formatDate(date) {
             const [year, month, day] = date.split('-');
             return day + '/' + month + '/' + year;
@@ -120,6 +173,12 @@ export default {
                 this.appointments = data.data;
                 this.timezone = data.timezone;
                 this.duration = data.duration_minutes;
+                this.calendar = data.google_calendar;
+                this.connectionUrl = data.connection_url;
+                if (data.connection_result) {
+                    this.notice = data.connection_result.message;
+                    this.noticeType = data.connection_result.status === 'success' ? 'alert-success' : 'alert-warning';
+                }
             } catch (error) {
                 this.loadError = 'Não foi possível carregar a agenda. Verifique sua conexão e sessão e tente atualizar a lista.';
             } finally {

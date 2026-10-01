@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Agenda;
 use App\Repositories\AgendaRepositoryInterface;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -26,6 +27,20 @@ class AgendaService
     {
         // O registro local permanece salvo mesmo se o servico externo falhar.
         $agenda = $this->repository->create($data);
+
+        return $this->synchronize($agenda);
+    }
+
+    public function sync(int $id): array
+    {
+        return $this->synchronize($this->repository->find($id));
+    }
+
+    private function synchronize(Agenda $agenda): array
+    {
+        if ($agenda->google_event_id) {
+            return ['data' => $agenda, 'integration' => ['status' => 'synced', 'message' => 'Este agendamento já está sincronizado.']];
+        }
 
         try {
             $eventId = $this->calendar->createEvent($agenda);
